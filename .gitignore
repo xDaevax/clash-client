@@ -1,0 +1,9 @@
+bin
+obj
+build
+dist
+*.suo
+*resharper*
+*.user
+*.cache
+*.dotCover
