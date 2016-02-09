@@ -38,7 +38,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,16 +48,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clans\ClanLocation.cs" />
+    <Compile Include="Clans\ClanResult.cs" />
+    <Compile Include="Clans\ClanSearchRequest.cs" />
+    <Compile Include="Clans\ClanSearchResponse.cs" />
+    <Compile Include="Configuration\ConfigurationKeys.cs" />
     <Compile Include="Configuration\IConfigurationProvider.cs" />
     <Compile Include="Configuration\InMemoryConfigurationProvider.cs" />
+    <Compile Include="ErrorResponse.cs" />
     <Compile Include="Net\ApiClient.cs" />
     <Compile Include="Net\ApiRequest.cs" />
+    <Compile Include="Net\ApiResponse.cs" />
+    <Compile Include="Net\QueryStringFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchResponse.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Clans\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
