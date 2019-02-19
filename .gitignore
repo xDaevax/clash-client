@@ -7,3 +7,6 @@ dist
 *.user
 *.cache
 *.dotCover
+/.vs
+/Src/.vs/ClashClient/v15/Server/sqlite3
+/Src/packages

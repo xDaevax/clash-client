@@ -1,9 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace ClashClient.Clans {
     /// <summary>
@@ -15,9 +11,11 @@ namespace ClashClient.Clans {
 
         private int _level;
         private ClanLocation _location;
+        private int _members;
         private string _name;
+        private int _points;
         private string _tag;
-        private int _warWins;
+        private int _versusPoints;
 
         #endregion
 
@@ -29,9 +27,11 @@ namespace ClashClient.Clans {
         public ClanResult() {
             this._level = 1;
             this._location = new ClanLocation();
+            this._members = -1;
             this._name = string.Empty;
+            this._points = -1;
             this._tag = string.Empty;
-            this._warWins = 0;
+            this._versusPoints = 0;
         } // end default constructor
 
         #endregion
@@ -65,6 +65,15 @@ namespace ClashClient.Clans {
         } // end property Location
 
         /// <summary>
+        /// Gets or sets the number of members in the clan.
+        /// </summary>
+        [JsonProperty("members")]
+        public virtual int Members {
+            get => this._members;
+            set => this._members = value;
+        } // end property Members
+
+        /// <summary>
         /// Gets or sets the name of the clan.  This is the name the leader assigned when creating the clan.
         /// </summary>
         [JsonProperty("name")]
@@ -77,6 +86,15 @@ namespace ClashClient.Clans {
                 }
             }
         } // end property Name
+
+        /// <summary>
+        /// Gets or sets the number of points the clan has.
+        /// </summary>
+        [JsonProperty("clanPoints")]
+        public virtual int Points {
+            get => this._points;
+            set => this._points = value;
+        } // end property Points
 
         /// <summary>
         /// Gets or sets the automatically game-assigned identifier or clan-tag for the clan.
@@ -93,16 +111,16 @@ namespace ClashClient.Clans {
         } // end property Tag
 
         /// <summary>
-        /// Gets or sets the number of war wins the clan has.
+        /// Gets or sets the number of versus points the clan has.
         /// </summary>
-        [JsonProperty("warWins")]
-        public virtual int WarWins {
+        [JsonProperty("clanVersusPoints")]
+        public virtual int VersusPoints {
             get {
-                return this._warWins;
+                return this._versusPoints;
             } set {
-                this._warWins = value;
+                this._versusPoints = value;
             }
-        } // end property WarWins
+        } // end property VersusPoints
 
         #endregion
     } // end class ClanResult

@@ -1,23 +1,30 @@
-﻿using ClashClient.Configuration;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
+using ClashClient.Common.Caching;
+using ClashClient.Common.Configuration;
+using ClashClient.Configuration;
+using log4net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace ClashClient.Net {
     /// <summary>
     /// Class used to connect to the API.
     /// </summary>
     public class ApiClient {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         #region --Instance Varibles--
 
-        private IConfigurationProvider _configurationProvider;
-        private JsonSerializer _serializer;
+        private readonly ICacheProvider _cacheProvider;
+        private readonly IConfigurationProvider _configurationProvider;
+        private readonly JsonSerializer _serializer;
 
         #endregion
 
@@ -27,9 +34,12 @@ namespace ClashClient.Net {
         /// Initializes a new instance of the <see cref="ApiClient"/> class.
         /// </summary>
         /// <param name="configurationProvider">The <see cref="IConfigurationProvider"/> instance used to load configuration data.</param>
-        public ApiClient(IConfigurationProvider configurationProvider) {
+        /// <param name="cacheProvider">The <see cref="ICacheProvider"/> instance used to manage cached data.</param>
+        public ApiClient(IConfigurationProvider configurationProvider, ICacheProvider cacheProvider) {
             this._configurationProvider = configurationProvider;
             this._serializer = new JsonSerializer();
+            this.Serializer.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy()));
+            this._cacheProvider = cacheProvider;
         } // end defaualt constructor
 
         #endregion
@@ -42,42 +52,87 @@ namespace ClashClient.Net {
         /// <typeparam name="TResponse">The type of response object expected back from the API.</typeparam>
         /// <param name="apiRequest">The <see cref="ApiRequest"/> that contains the data used to customize the API call.</param>
         /// <returns>A new <see cref="ApiResponse"/> instance with the results of the API call.</returns>
-        public virtual ApiResponse Load<TResponse>(ApiRequest apiRequest) where TResponse : class {
+        public virtual ApiResponse<TResponse> Load<TResponse>(ApiRequest apiRequest) where TResponse : class {
             if (apiRequest == null) {
                 throw new ArgumentNullException("apiRequest", "No request was provided.");
             }
 
-            ApiResponse response = new ApiResponse();
+            var response = new ApiResponse<TResponse>();
+            var responseMessages = new List<ApiMessage>();
             HttpWebRequest request = null;
 
             request = this.BuildRequest(apiRequest);
-            string responseContents = string.Empty;
 
-            try {
-                using (HttpWebResponse resp = (HttpWebResponse)request.GetResponse()) {
-                    using (var sr = new StreamReader(resp.GetResponseStream())) {
-                        responseContents = sr.ReadToEnd();
-                    }
-                }
+            string cacheName = $"ApiResponse_{apiRequest.ToCacheName(new QueryStringFormatter())}";
+            var cachedResponse = this.CacheProvider.Read<ApiResponse<TResponse>>(cacheName);
+            var workingResponse = new ApiResponse<TResponse>();
 
-                if (!string.IsNullOrWhiteSpace(responseContents)) {
-                    using (var stringReader = new StringReader(responseContents)) {
-                        using (var jsonReader = new JsonTextReader(stringReader)) {
-                            try {
-                                response.Data = this._serializer.Deserialize<TResponse>(jsonReader);
-                            } catch (JsonSerializationException) {
-                                // TODO: Better Error handling
-                                throw;
-                            }
+            if (cachedResponse == null || !cachedResponse.CacheHit()) {
+                string responseContents = string.Empty;
+
+                try {
+                    using (var resp = (HttpWebResponse)request.GetResponse()) {
+                        workingResponse.HttpStatusCode = (int)resp.StatusCode;
+                        using (var sr = new StreamReader(resp.GetResponseStream())) {
+                            responseContents = sr.ReadToEnd();
                         }
                     }
+
+                    if (!string.IsNullOrWhiteSpace(responseContents)) {
+                        using (var stringReader = new StringReader(responseContents)) {
+                            using (var jsonReader = new JsonTextReader(stringReader)) {
+                                try {
+                                    workingResponse.Successful = true;
+                                    workingResponse.Data = this.Serializer.Deserialize<TResponse>(jsonReader);
+                                    responseMessages.Add(new ApiMessage("API call succeeded.", "1.001.001", ApiMessageCategory.Diagnostic));
+                                } catch (JsonSerializationException jse) {
+                                    workingResponse.Successful = false;
+                                    Log.Error("Unable to deserialize API response.", jse);
+                                    responseMessages.Add(new ApiMessage($"Unable to serialize the API response: {jse.Message}.  See the logs for more information.", "3.001.001", ApiMessageCategory.Failure));
+                                }
+                            }
+                        }
+                    } else {
+                        workingResponse.Successful = true;
+                        responseMessages.Add(new ApiMessage("No reponse body received from API.", "2.001.001", ApiMessageCategory.Problem));
+                    }
+                } catch (WebException wex) {
+                    workingResponse.Successful = false;
+                    Log.Error($"An error occurred while invoking the api: {request.RequestUri}.", wex);
+                    if (wex.Response is HttpWebResponse errorResponse) {
+                        workingResponse.HttpStatusCode = (int)errorResponse.StatusCode;
+                        if (errorResponse.StatusCode == HttpStatusCode.BadRequest || errorResponse.StatusCode == HttpStatusCode.Forbidden || errorResponse.StatusCode == HttpStatusCode.InternalServerError || errorResponse.StatusCode == HttpStatusCode.NotFound || errorResponse.StatusCode == HttpStatusCode.ServiceUnavailable) {
+                            var errorDetail = this.ParseErrorResponse(errorResponse);
+                            if (errorDetail != null) {
+                                responseMessages.Add(new ApiMessage($"Error Detail: {errorDetail.Reason} - {errorDetail.Message}", "3.001.004", ApiMessageCategory.Failure));
+                            } else {
+                                Log.Warn($"Unable to read the error response from the API.");
+                                responseMessages.Add(new ApiMessage($"Unable to read the response from the API: {request.RequestUri}.", "3.001.005", ApiMessageCategory.Failure));
+                            }
+                        } else {
+                            responseMessages.Add(new ApiMessage($"An unknown status was returned from the API: {errorResponse.StatusCode}.", "3.001.002", ApiMessageCategory.Failure));
+                        }
+                    } else {
+                        responseMessages.Add(new ApiMessage($"The API response is not available or could not be found for endpoint: {request.RequestUri}.", "3.001.003", ApiMessageCategory.Failure));
+                    }
+                } finally {
+
+                    response = new ApiResponse<TResponse> {
+                        Successful = workingResponse.Successful,
+                        Data = workingResponse.Data,
+                        HttpStatusCode = workingResponse.HttpStatusCode,
+                        Messages = responseMessages.ToList()
+                    };
+                    responseMessages.Add(new ApiMessage("Response loaded from cache.", ApiMessageCategory.Diagnostic));
+                    workingResponse.Messages = responseMessages;
+                    if (workingResponse.Successful) {
+                        var dataToCache = new CacheEntry<ApiResponse<TResponse>>(workingResponse) { CachePreference = CachePreference.ShortLivedSliding };
+                        this.CacheProvider.Set(cacheName, dataToCache);
+                    }
                 }
-            } catch (WebException wex) {
-                var errorResponse = wex.Response as HttpWebResponse;
-                if (errorResponse != null && errorResponse.StatusCode == HttpStatusCode.BadRequest) {
-                    response.Data = this.ParseErrorResponse(errorResponse);
-                }
-            } 
+            } else {
+                response = cachedResponse.LoadCachedData();
+            }
 
             return response;
         } // end function Load
@@ -94,12 +149,12 @@ namespace ClashClient.Net {
             string version = string.Empty;
             string apiToken = string.Empty;
 
-            if (this.ConfigurationProvider.TryGetValue<string>(ConfigurationKeys.BaseApiUrlKey(), out baseUrl)) {
-                if (this.ConfigurationProvider.TryGetValue<string>(ConfigurationKeys.ApiVersionKey(), out version)) {
-                    string apiUrl = string.Concat(baseUrl, "//", version, "/", apiRequest.Method).Replace("///", "/");
+            if (this.ConfigurationProvider.TryGetValue(ConfigurationKeys.BaseApiUrlKey, out baseUrl)) {
+                if (this.ConfigurationProvider.TryGetValue(ConfigurationKeys.ApiVersionKey, out version)) {
+                    string apiUrl = $"{baseUrl}/{version}/{apiRequest.Method}".Replace("///", "/");
                     string parameters = apiRequest.ParametersToQueryString(new QueryStringFormatter());
-                    if (this.ConfigurationProvider.TryGetValue<string>(ConfigurationKeys.ApiTokenKey(), out apiToken)) {
-                        request = (HttpWebRequest)HttpWebRequest.Create(string.Concat(apiUrl, "?", parameters));
+                    if (this.ConfigurationProvider.TryGetValue(ConfigurationKeys.ApiTokenKey, out apiToken)) {
+                        request = (HttpWebRequest)WebRequest.Create(string.Concat(apiUrl, "?", parameters));
                         request.Headers.Add("authorization", string.Concat("Bearer ", apiToken));
                         request.Accept = "application/json";
                     } else {
@@ -121,7 +176,7 @@ namespace ClashClient.Net {
         /// </summary>
         /// <returns>A new instance of the <see cref="ErrorResponse"/> type from the data in the <param name="webResponse">webResponse</param>.</returns>
         protected virtual ErrorResponse ParseErrorResponse(HttpWebResponse webResponse) {
-            ErrorResponse response = new ErrorResponse();
+            var response = new ErrorResponse();
             string data = string.Empty;
             using (var responseStream = webResponse.GetResponseStream()) {
                 using (var reader = new StreamReader(responseStream)) {
@@ -131,7 +186,7 @@ namespace ClashClient.Net {
 
             using (var reader = new StringReader(data)) {
                 using (var txtReader = new JsonTextReader(reader)) {
-                    response = this._serializer.Deserialize<ErrorResponse>(txtReader);
+                    response = this.Serializer.Deserialize<ErrorResponse>(txtReader);
                 }
             }
 
@@ -143,7 +198,14 @@ namespace ClashClient.Net {
         #region --Properties--
 
         /// <summary>
-        /// Gets the <see cref="IConfigurationProvider"/> instance used to load configuration data.
+        /// Gets the injected <see cref="ICacheProvider"/> instance used to manage data in cache.
+        /// </summary>
+        protected ICacheProvider CacheProvider {
+            get => this._cacheProvider;
+        } // end property CacheProvider
+
+        /// <summary>
+        /// Gets the injected <see cref="IConfigurationProvider"/> instance used to load configuration data.
         /// </summary>
         protected IConfigurationProvider ConfigurationProvider {
             get {

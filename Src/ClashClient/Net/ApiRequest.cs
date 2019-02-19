@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Web;
 
 namespace ClashClient.Net {
     /// <summary>
@@ -29,6 +25,15 @@ namespace ClashClient.Net {
         #endregion
 
         #region --Functions--
+
+        /// <summary>
+        /// Returns the name this request should use for caching purposes.
+        /// </summary>
+        /// <param name="formatter">The <see cref="QueryStringFormatter"/> instance used to parse parameters</param>
+        /// <returns>A cache-key safe string to use for the name of this item if stored in cache.</returns>
+        public virtual string ToCacheName(QueryStringFormatter formatter) {
+            return HttpUtility.UrlDecode($"{this.Method}_{this.ParametersToQueryString(formatter)}").Replace(" ", "_");
+        } // end function ToCacheName
 
         /// <summary>
         /// Converts the properties relevant to the request into their corresponding query-string name / value pairs.
