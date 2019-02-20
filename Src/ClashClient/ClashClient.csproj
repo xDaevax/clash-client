@@ -55,10 +55,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clans\BadgeInfo.cs" />
+    <Compile Include="Clans\ClanInfoRequest.cs" />
     <Compile Include="Clans\ClanLocation.cs" />
     <Compile Include="Clans\ClanResult.cs" />
     <Compile Include="Clans\ClanSearchRequest.cs" />
     <Compile Include="Clans\ClanSearchResponse.cs" />
+    <Compile Include="Clans\DetailedClanResult.cs" />
+    <Compile Include="Clans\MembershipType.cs" />
     <Compile Include="Clans\WarFrequency.cs" />
     <Compile Include="Configuration\ConfigurationKeys.cs" />
     <Compile Include="Configuration\InMemoryConfigurationProvider.cs" />
@@ -68,7 +72,10 @@
     <Compile Include="Net\ApiMessageCategory.cs" />
     <Compile Include="Net\ApiRequest.cs" />
     <Compile Include="Net\ApiResponse.cs" />
+    <Compile Include="Net\IApiClient.cs" />
     <Compile Include="Net\QueryStringFormatter.cs" />
+    <Compile Include="Players\LeageResult.cs" />
+    <Compile Include="Players\PlayerSummary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchResponse.cs" />
   </ItemGroup>
@@ -81,6 +88,7 @@
       <Name>ClashClient.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

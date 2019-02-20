@@ -17,7 +17,7 @@ namespace ClashClient.Net {
     /// <summary>
     /// Class used to connect to the API.
     /// </summary>
-    public class ApiClient {
+    public class ApiClient : IApiClient {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #region --Instance Varibles--
@@ -153,8 +153,18 @@ namespace ClashClient.Net {
                 if (this.ConfigurationProvider.TryGetValue(ConfigurationKeys.ApiVersionKey, out version)) {
                     string apiUrl = $"{baseUrl}/{version}/{apiRequest.Method}".Replace("///", "/");
                     string parameters = apiRequest.ParametersToQueryString(new QueryStringFormatter());
+                    string urlArgs = apiRequest.ParametersToUrlPath();
                     if (this.ConfigurationProvider.TryGetValue(ConfigurationKeys.ApiTokenKey, out apiToken)) {
-                        request = (HttpWebRequest)WebRequest.Create(string.Concat(apiUrl, "?", parameters));
+                        string targetUrl = apiUrl;
+                        if (!string.IsNullOrWhiteSpace(urlArgs)) {
+                            targetUrl += urlArgs;
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(parameters)) {
+                            targetUrl += string.Concat("?", parameters);
+                        }
+
+                        request = (HttpWebRequest)WebRequest.Create(targetUrl);
                         request.Headers.Add("authorization", string.Concat("Bearer ", apiToken));
                         request.Accept = "application/json";
                     } else {

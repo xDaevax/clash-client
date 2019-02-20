@@ -32,7 +32,7 @@ namespace ClashClient.Net {
         /// <param name="formatter">The <see cref="QueryStringFormatter"/> instance used to parse parameters</param>
         /// <returns>A cache-key safe string to use for the name of this item if stored in cache.</returns>
         public virtual string ToCacheName(QueryStringFormatter formatter) {
-            return HttpUtility.UrlDecode($"{this.Method}_{this.ParametersToQueryString(formatter)}").Replace(" ", "_");
+            return HttpUtility.UrlDecode($"{this.Method}_{this.ParametersToUrlPath()}_{this.ParametersToQueryString(formatter)}").Replace(" ", "_");
         } // end function ToCacheName
 
         /// <summary>
@@ -40,7 +40,17 @@ namespace ClashClient.Net {
         /// </summary>
         /// <param name="formatter">The <see cref="QueryStringFormatter"/> instance used to format property values for query string use.</param>
         /// <returns>A string formatted for a query-string in a URL.</returns>
-        public abstract string ParametersToQueryString(QueryStringFormatter formatter);
+        public virtual string ParametersToQueryString(QueryStringFormatter formatter) {
+            return string.Empty;
+        } // end function ParametersToQueryString
+
+        /// <summary>
+        /// Returns the set of parameters that need to be included in the URL (not as part of the query string).
+        /// </summary>
+        /// <returns>A string (with leading "/") for the url arguments.</returns>
+        public virtual string ParametersToUrlPath() {
+            return string.Empty;
+        } // end function ParametersToUrlPath
 
         #endregion
 

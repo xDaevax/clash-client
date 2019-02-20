@@ -13,6 +13,9 @@ namespace ClashClient.Clans {
         #region --Instance Variables--
 
         private string _clanName;
+        private int _limit;
+        private int _locationId;
+        private int _maximumMembers;
         private int _minimumMembers;
         private WarFrequency? _warFrequency;
 
@@ -25,6 +28,9 @@ namespace ClashClient.Clans {
         /// </summary>
         public ClanSearchRequest() {
             this._clanName = string.Empty;
+            this._limit = -1;
+            this._locationId = -1;
+            this._maximumMembers = -1;
             this._minimumMembers = -1;
             this._warFrequency = null;
         } // end default constructor
@@ -58,6 +64,17 @@ namespace ClashClient.Clans {
                 needsConcatenated = true;
             }
 
+            if (this.MaximumMembers >= 0) {
+                if (needsConcatenated) {
+                    sb.Append("&");
+                }
+
+                var maxMemberPair = formatter.Format("maxMembers", this.MaximumMembers, false);
+
+                sb.Append($"{maxMemberPair.Key}={maxMemberPair.Value}");
+                needsConcatenated = true;
+            }
+
             if (this.MinimumMembers >= 0) {
                 if (needsConcatenated) {
                     sb.Append("&");
@@ -66,6 +83,28 @@ namespace ClashClient.Clans {
                 var minMemberPair = formatter.Format("minMembers", this.MinimumMembers, false);
 
                 sb.Append($"{minMemberPair.Key}={minMemberPair.Value}");
+                needsConcatenated = true;
+            }
+
+            if (this.LocationId >= 0) {
+                if (needsConcatenated) {
+                    sb.Append("&");
+                }
+
+                var locationIdPair = formatter.Format("locationId", this.LocationId, false);
+
+                sb.Append($"{locationIdPair.Key}={locationIdPair.Value}");
+                needsConcatenated = true;
+            }
+
+            if (this.Limit >= 0) {
+                if (needsConcatenated) {
+                    sb.Append("&");
+                }
+
+                var limitPair = formatter.Format("limit", this.Limit, false);
+
+                sb.Append($"{limitPair.Key}={limitPair.Value}");
                 needsConcatenated = true;
             }
 
@@ -87,6 +126,33 @@ namespace ClashClient.Clans {
                 this._clanName = value;
             }
         } // end property ClanName
+
+        /// <summary>
+        /// Gets or sets the maximum number of results to return.
+        /// </summary>
+        [JsonProperty("limit")]
+        public virtual int Limit {
+            get => this._limit;
+            set => this._limit = value;
+        } // end property Limit
+
+        /// <summary>
+        /// Gets or sets the location id search filter (-1 if not specified the argument will not be passed).
+        /// </summary>
+        [JsonProperty("locationId")]
+        public virtual int LocationId {
+            get => this._locationId;
+            set => this._locationId = value;
+        } // end property LocationId
+
+        /// <summary>
+        /// Gets or sets the maximum number of members for the resulting clans to have.
+        /// </summary>
+        [JsonProperty("maxMembers")]
+        public virtual int MaximumMembers {
+            get => this._maximumMembers;
+            set => this._maximumMembers = value;
+        } // end property MaximumMembers
 
         /// <summary>
         /// Gets or sets the minimum number of members for the resulting clans to have.

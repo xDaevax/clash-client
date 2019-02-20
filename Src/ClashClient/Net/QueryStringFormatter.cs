@@ -48,7 +48,7 @@ namespace ClashClient.Net {
 
             KeyValuePair<string, string> formattedValue;
 
-            string processedValue = value.ToString();
+            string processedValue = string.Concat(value, string.Empty);
             processedValue = HttpUtility.UrlEncode(processedValue);
 
             formattedValue = new KeyValuePair<string, string>(name, processedValue);

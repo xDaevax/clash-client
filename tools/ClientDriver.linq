@@ -42,20 +42,20 @@ void Main() {
     ICacheSettings cacheSettings = new CacheSettings(configProvider);
     ICacheProvider cacheProvider = new RuntimeCacheProvider(cacheSettings);
     
-    var request = new ClanSearchRequest() { ClanName = "Pretty Useless", Method = "clans", WarFrequency = WarFrequency.Unknown, MinimumMembers = 20  };
+    var searchRequest = new ClanSearchRequest() { ClanName = "Pretty Useless", Method = "clans", WarFrequency = WarFrequency.Unknown, MinimumMembers = 20, Limit = 20  };
+    var detailRequest = new ClanInfoRequest() { Method = "clans", Tag = "#9RP9PLY0" };
     ApiClient client = new ApiClient(configProvider, cacheProvider);
     
-    var response = client.Load<ClanSearchResponse>(request);
+    var response = client.Load<ClanSearchResponse>(searchRequest);
+    var detailResponse = client.Load<DetailedClanResult>(detailRequest);
     
     response.Dump();
+    detailResponse.Dump();
 
-    var items = cacheProvider.GetCacheItemInfo(new List<string>() { $"ApiResponse_{request.ToCacheName(new QueryStringFormatter())}"});
-    
+    var items = cacheProvider.GetCacheItemInfo(new List<string>() { $"ApiResponse_{searchRequest.ToCacheName(new QueryStringFormatter())}", $"ApiResponse_{detailRequest.ToCacheName(new QueryStringFormatter())}" });
     items.Dump();
 
-    var nextResponse = client.Load<ClanSearchResponse>(request);
     
-    nextResponse.Dump();
 }
 
 // Define other methods and classes here
