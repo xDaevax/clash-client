@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Resources;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -10,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ClashClient")]
-[assembly: AssemblyCopyright("Copyright ©  2016  David Kyle")]
+[assembly: AssemblyCopyright("Copyright ©  2016-2019  David Kyle")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,3 +35,5 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.0.1.20")]
 [assembly: AssemblyFileVersion("0.0.1.20")]
+[assembly: NeutralResourcesLanguage("en-US")]
+
