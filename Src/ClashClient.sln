@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{4DC3B061
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{900E7AD3-22FF-4D46-AF49-6EE766DBAB53}"
 	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
 		..\.gitignore = ..\.gitignore
 		..\LICENSE = ..\LICENSE
 		..\README.md = ..\README.md
@@ -31,6 +32,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashClient.TestHelpers", "ClashClient.TestHelpers\ClashClient.TestHelpers.csproj", "{123318AD-8413-420C-BE51-A919926F9DB9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{02FE0D0C-9B7C-49BC-8136-7FFE98DD603E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "resources", "resources", "{D6A91F89-80CF-42C4-AE5E-153646181D64}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "readme", "readme", "{6F74FE54-0B8A-4B13-ACC4-D859BE5A558A}"
+	ProjectSection(SolutionItems) = preProject
+		..\resources\readme\create_token.png = ..\resources\readme\create_token.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +80,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6F74FE54-0B8A-4B13-ACC4-D859BE5A558A} = {D6A91F89-80CF-42C4-AE5E-153646181D64}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0FC0413-884C-4C9F-BCDC-956483888AA2}

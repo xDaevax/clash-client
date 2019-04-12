@@ -134,7 +134,7 @@ namespace ClashClient.Common.Caching {
         /// <returns>The matching <see cref="ICachePreferenceElement"/> in config (if defined);  null otherwise.</returns>
         public virtual ICachePreferenceElement LoadPreferenceSetting(CachePreference preference) {
             Log.DebugFormat("Loading cache preference settings for the {0} preference.", preference.ToString());
-            var setting = this.CacheSettings.LoadPreference(preference);
+            ICachePreferenceElement setting = this.CacheSettings.LoadPreference(preference);
             ICachePreferenceElement returnValue = null;
 
             if (setting == null) {
@@ -177,7 +177,7 @@ namespace ClashClient.Common.Caching {
 
                         PropertyInfo targetType = cacheStoreType.GetProperty("Target", bindFlags);
 
-                        var storeTarget = targetType?.GetValue(cacheStore);
+                        object storeTarget = targetType?.GetValue(cacheStore);
 
                         FieldInfo lockField = targetType?.GetValue(cacheStore).GetType().GetField("_entriesLock", bindFlags);
 
@@ -195,9 +195,9 @@ namespace ClashClient.Common.Caching {
                                     if (nameFilters.Any(t => string.Equals(key, t, StringComparison.OrdinalIgnoreCase))) {
                                         Log.Info($"Attempting to load cache information for the key: {key}.");
                                         PropertyInfo value = cacheItemValueType.GetProperty("Value", bindFlags);
-                                        PropertyInfo utcAbsoluteExpiry = cacheItemValueType.GetProperty("UtcAbsExp", bindFlags);
+                                        var utcAbsoluteExpiry = cacheItemValueType.GetProperty("UtcAbsExp", bindFlags);
                                         var valueInstance = value.GetValue(cacheItemEntry.Value);
-                                        CachePreference preference = CachePreference.Default;
+                                        var preference = CachePreference.Default;
                                         if (valueInstance != null && valueInstance.GetType().GetProperty("CachePreference") != null) {
                                             preference = (CachePreference)valueInstance.GetType().GetProperty("CachePreference").GetValue(valueInstance);
                                         }

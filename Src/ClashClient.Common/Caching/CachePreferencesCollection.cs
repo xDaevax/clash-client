@@ -130,7 +130,7 @@ namespace ClashClient.Common.Caching {
         /// </summary>
         /// <param name="name">The name of the element being retrieved.</param>
         /// <returns>The configuration element with the given <paramref name="name"/>.</returns>
-        new public CachePreferenceElement this[string name] {
+        public new CachePreferenceElement this[string name] {
             get => (CachePreferenceElement)this.BaseGet((CachePreference)Enum.Parse(typeof(CachePreference), name));
         } // end shadowed default string-based property
 
