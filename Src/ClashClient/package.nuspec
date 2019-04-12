@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>ClashClient</id>
-    <version>0.0.1.20</version>
+    <version>0.0.1.23</version>
     <title>ClashClient</title>
     <authors>xDaevax</authors>
     <owners>xDaevax</owners>
@@ -11,7 +11,7 @@
     <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Client library for consuming the Clash of Clans API</description>
-    <releaseNotes>Initial package release</releaseNotes>
+    <releaseNotes>Small refactors and updates</releaseNotes>
     <copyright>Copyright 2019</copyright>
     <tags>clash-of-clans</tags>
     <dependencies>
