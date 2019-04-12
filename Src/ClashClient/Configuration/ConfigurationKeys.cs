@@ -1,24 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ClashClient.Configuration {
+﻿namespace ClashClient.Configuration {
     /// <summary>
     /// Class that exposes all of the "magic" configuration keys and strings in one place.
     /// </summary>
     internal static class ConfigurationKeys {
-        #region --Functions--
+        #region --Keys--
 
         /// <summary>
         /// Returns the key name for the configuration key that refers to the version of the clash-of-clans API.
         /// Use this configuration key to load the value that controls which version of the API to call.
         /// </summary>
         /// <returns>ApiVersion</returns>
-        internal static string ApiVersionKey() {
-            return "ApiVersion";
-        } // end function ApiVersionKey
+        internal const string ApiVersionKey = "ApiVersion";
 
         /// <summary>
         /// Returns the key name for the configuration key that refers to the base clash of clans URL.
@@ -26,18 +18,14 @@ namespace ClashClient.Configuration {
         /// simplify testing or perform isolated tests in an offline environment.
         /// </summary>
         /// <returns>ClashAPI</returns>
-        internal static string BaseApiUrlKey() {
-            return "ClashAPI";
-        } // end function BaseApiUrlKey
+        internal const string BaseApiUrlKey = "ClashAPI";
 
         /// <summary>
         /// Returns the key name for the configuration key that refers to the individual developer token used to authenticate
         /// against the clash of clans URL.
         /// </summary>
         /// <returns>ApiToken</returns>
-        internal static string ApiTokenKey() {
-            return "ApiToken";
-        } // end function ApiTokenKey
+        internal const string ApiTokenKey = "ApiToken";
 
         #endregion
     } // end class ConfigurationKeys

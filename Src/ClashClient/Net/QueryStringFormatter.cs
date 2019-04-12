@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace ClashClient.Net {
@@ -42,16 +39,16 @@ namespace ClashClient.Net {
         /// <exception cref="ArgumentNullException">Thrown if the given <paramref name="name"/> is null or if the <paramref name="allowEmptyValue"/> is true and the <paramref name="value"/> is null</exception>
         public virtual KeyValuePair<string, string> Format(string name, object value, bool allowEmptyValue) {
             if (string.IsNullOrWhiteSpace(name)) {
-                throw new ArgumentNullException("name", "No name provided");
+                throw new ArgumentNullException(nameof(name), "No name provided");
             }
 
             if (!allowEmptyValue && value == null) {
-                throw new ArgumentNullException("value", "No value provided.");
+                throw new ArgumentNullException(nameof(value), "No value provided.");
             }
 
             KeyValuePair<string, string> formattedValue;
 
-            string processedValue = value.ToString();
+            string processedValue = string.Concat(value, string.Empty);
             processedValue = HttpUtility.UrlEncode(processedValue);
 
             formattedValue = new KeyValuePair<string, string>(name, processedValue);

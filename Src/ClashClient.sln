@@ -1,20 +1,90 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashClient", "ClashClient\ClashClient.csproj", "{BBC41327-ABCC-4653-A91A-E16B95D59DA3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{35C3C3C3-11B5-470B-8B9E-1FC1B57201A9}"
+	ProjectSection(SolutionItems) = preProject
+		..\build\ClashClient.ruleset = ..\build\ClashClient.ruleset
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashClient.Common", "ClashClient.Common\ClashClient.Common.csproj", "{DE50471B-30A7-4B26-AD84-7070B73C827A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{4DC3B061-BEC4-4F31-88A5-C2EADFA6EB1F}"
+	ProjectSection(SolutionItems) = preProject
+		..\tools\ClientDriver.linq = ..\tools\ClientDriver.linq
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{900E7AD3-22FF-4D46-AF49-6EE766DBAB53}"
+	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
+		..\.gitignore = ..\.gitignore
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashClient.Tests", "ClashClient.Tests\ClashClient.Tests.csproj", "{B2F1128C-E65F-45DD-88C9-64E6CE3EEC36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashClient.Common.Tests", "ClashClient.Common.Tests\ClashClient.Common.Tests.csproj", "{E7E43497-E5EA-4964-B148-242166621713}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashClient.TestHelpers", "ClashClient.TestHelpers\ClashClient.TestHelpers.csproj", "{123318AD-8413-420C-BE51-A919926F9DB9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{02FE0D0C-9B7C-49BC-8136-7FFE98DD603E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "resources", "resources", "{D6A91F89-80CF-42C4-AE5E-153646181D64}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "readme", "readme", "{6F74FE54-0B8A-4B13-ACC4-D859BE5A558A}"
+	ProjectSection(SolutionItems) = preProject
+		..\resources\readme\create_token.png = ..\resources\readme\create_token.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		NuGet|Any CPU = NuGet|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BBC41327-ABCC-4653-A91A-E16B95D59DA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BBC41327-ABCC-4653-A91A-E16B95D59DA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBC41327-ABCC-4653-A91A-E16B95D59DA3}.NuGet|Any CPU.ActiveCfg = NuGet|Any CPU
+		{BBC41327-ABCC-4653-A91A-E16B95D59DA3}.NuGet|Any CPU.Build.0 = NuGet|Any CPU
 		{BBC41327-ABCC-4653-A91A-E16B95D59DA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBC41327-ABCC-4653-A91A-E16B95D59DA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE50471B-30A7-4B26-AD84-7070B73C827A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE50471B-30A7-4B26-AD84-7070B73C827A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE50471B-30A7-4B26-AD84-7070B73C827A}.NuGet|Any CPU.ActiveCfg = NuGet|Any CPU
+		{DE50471B-30A7-4B26-AD84-7070B73C827A}.NuGet|Any CPU.Build.0 = NuGet|Any CPU
+		{DE50471B-30A7-4B26-AD84-7070B73C827A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE50471B-30A7-4B26-AD84-7070B73C827A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2F1128C-E65F-45DD-88C9-64E6CE3EEC36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2F1128C-E65F-45DD-88C9-64E6CE3EEC36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2F1128C-E65F-45DD-88C9-64E6CE3EEC36}.NuGet|Any CPU.ActiveCfg = NuGet|Any CPU
+		{B2F1128C-E65F-45DD-88C9-64E6CE3EEC36}.NuGet|Any CPU.Build.0 = NuGet|Any CPU
+		{B2F1128C-E65F-45DD-88C9-64E6CE3EEC36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2F1128C-E65F-45DD-88C9-64E6CE3EEC36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7E43497-E5EA-4964-B148-242166621713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7E43497-E5EA-4964-B148-242166621713}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7E43497-E5EA-4964-B148-242166621713}.NuGet|Any CPU.ActiveCfg = NuGet|Any CPU
+		{E7E43497-E5EA-4964-B148-242166621713}.NuGet|Any CPU.Build.0 = NuGet|Any CPU
+		{E7E43497-E5EA-4964-B148-242166621713}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7E43497-E5EA-4964-B148-242166621713}.Release|Any CPU.Build.0 = Release|Any CPU
+		{123318AD-8413-420C-BE51-A919926F9DB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{123318AD-8413-420C-BE51-A919926F9DB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{123318AD-8413-420C-BE51-A919926F9DB9}.NuGet|Any CPU.ActiveCfg = NuGet|Any CPU
+		{123318AD-8413-420C-BE51-A919926F9DB9}.NuGet|Any CPU.Build.0 = NuGet|Any CPU
+		{123318AD-8413-420C-BE51-A919926F9DB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{123318AD-8413-420C-BE51-A919926F9DB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6F74FE54-0B8A-4B13-ACC4-D859BE5A558A} = {D6A91F89-80CF-42C4-AE5E-153646181D64}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D0FC0413-884C-4C9F-BCDC-956483888AA2}
 	EndGlobalSection
 EndGlobal
