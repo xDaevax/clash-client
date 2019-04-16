@@ -3,9 +3,10 @@
   <Reference Relative="..\Src\ClashClient\bin\Debug\ClashClient.dll">C:\Users\kyle\Source\Repos\xDaevax\clash-client\Src\ClashClient\bin\Debug\ClashClient.dll</Reference>
   <Reference Relative="..\Src\ClashClient\bin\Debug\log4net.dll">C:\Users\kyle\Source\Repos\xDaevax\clash-client\Src\ClashClient\bin\Debug\log4net.dll</Reference>
   <Reference Relative="..\Src\ClashClient\bin\Debug\Newtonsoft.Json.dll">C:\Users\kyle\Source\Repos\xDaevax\clash-client\Src\ClashClient\bin\Debug\Newtonsoft.Json.dll</Reference>
+  <Reference>&lt;RuntimeDirectory&gt;\System.Web.dll</Reference>
   <Namespace>ClashClient.Clans</Namespace>
-  <Namespace>ClashClient.Net</Namespace>
   <Namespace>ClashClient.Common.Caching</Namespace>
+  <Namespace>ClashClient.Net</Namespace>
   <AppConfig>
     <Content>
       <configuration>
@@ -42,15 +43,18 @@ void Main() {
     ICacheSettings cacheSettings = new CacheSettings(configProvider);
     ICacheProvider cacheProvider = new RuntimeCacheProvider(cacheSettings);
     
-    var searchRequest = new ClanSearchRequest() { ClanName = "Pretty Useless", Method = "clans", WarFrequency = WarFrequency.Unknown, MinimumMembers = 20, Limit = 20  };
-    var detailRequest = new ClanInfoRequest() { Method = "clans", Tag = "#9RP9PLY0" };
+    var searchRequest = new ClanSearchRequest() { ClanName = "Pretty Useless", WarFrequency = WarFrequency.Unknown, MinimumMembers = 20, Limit = 20  };
+    var detailRequest = new ClanInfoRequest() { Tag = "#9RP9PLY0" };
+    var memberRequest = new ClanMembersRequest() { Tag = "#9RP9PLY0" };
     ApiClient client = new ApiClient(configProvider, cacheProvider);
     
     var response = client.Load<ClanSearchResponse>(searchRequest);
     var detailResponse = client.Load<DetailedClanResult>(detailRequest);
+    var memberResponse = client.Load<ClanMembersResponse>(memberRequest);
     
     response.Dump();
     detailResponse.Dump();
+    memberResponse.Dump();
 
     var items = cacheProvider.GetCacheItemInfo(new List<string>() { $"ApiResponse_{searchRequest.ToCacheName(new QueryStringFormatter())}", $"ApiResponse_{detailRequest.ToCacheName(new QueryStringFormatter())}" });
     items.Dump();

@@ -88,7 +88,7 @@ This example uses the `InMemoryConfigurationProvider`.  It is recommended to imp
     ICacheProvider cacheProvider = new RuntimeCacheProvider(cacheSettings);
     
     // Build a new request model instance with the desired parameters
-    var searchRequest = new ClanSearchRequest() { ClanName = "Pretty Useless", Method = "clans", WarFrequency = WarFrequency.Unknown, MinimumMembers = 20, Limit = 20  };
+    var searchRequest = new ClanSearchRequest() { ClanName = "Pretty Useless", WarFrequency = WarFrequency.Unknown, MinimumMembers = 20, Limit = 20  };
     
     // Initialize a new instance of the client with dependencies
     ApiClient client = new ApiClient(configProvider, cacheProvider);

@@ -21,6 +21,7 @@ namespace ClashClient.Clans {
         /// </summary>
         public ClanInfoRequest() : base() {
             this._tag = string.Empty;
+            this.Endpoint = ClashEndpoints.ClanDetail;
         } // end default constructor
 
         #endregion
@@ -32,7 +33,7 @@ namespace ClashClient.Clans {
         /// </summary>
         /// <returns>A string (with leading "/") for the url arguments.</returns>
         public override string ParametersToUrlPath() {
-            return string.Concat(base.ParametersToUrlPath(), $"/{HttpUtility.UrlEncode(this.Tag)}").Replace("//", "/");
+            return string.Concat(string.Format(this.Endpoint, HttpUtility.UrlEncode(this.Tag)).Replace("//", "/"));
         } // end function ParametersToUrlPath
 
 
