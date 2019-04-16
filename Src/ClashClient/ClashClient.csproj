@@ -68,6 +68,9 @@
     <Compile Include="Clans\BadgeInfo.cs" />
     <Compile Include="Clans\ClanInfoRequest.cs" />
     <Compile Include="Clans\ClanLocation.cs" />
+    <Compile Include="Clans\ClanMemberResult.cs" />
+    <Compile Include="Clans\ClanMembersRequest.cs" />
+    <Compile Include="Clans\ClanMembersResponse.cs" />
     <Compile Include="Clans\ClanResult.cs" />
     <Compile Include="Clans\ClanSearchRequest.cs" />
     <Compile Include="Clans\ClanSearchResponse.cs" />
@@ -82,6 +85,7 @@
     <Compile Include="Net\ApiMessageCategory.cs" />
     <Compile Include="Net\ApiRequest.cs" />
     <Compile Include="Net\ApiResponse.cs" />
+    <Compile Include="Net\ClashEndpoints.cs" />
     <Compile Include="Net\IApiClient.cs" />
     <Compile Include="Net\QueryStringFormatter.cs" />
     <Compile Include="Players\LeageResult.cs" />

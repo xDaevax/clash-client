@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Text;
-using ClashClient.Common.Extensions;
+using System.Collections.Generic;
 using ClashClient.Net;
 using Newtonsoft.Json;
 
@@ -33,6 +32,7 @@ namespace ClashClient.Clans {
             this._maximumMembers = -1;
             this._minimumMembers = -1;
             this._warFrequency = null;
+            this.Endpoint = ClashEndpoints.ClanSearch;
         } // end default constructor
 
         #endregion
@@ -40,76 +40,37 @@ namespace ClashClient.Clans {
         #region --Functions--
 
         /// <summary>
-        /// Returns a formatted string for use as a query-string in a URL.
+        /// Returns the filtered set of parameters that should be included in the query.
         /// </summary>
-        /// <param name="formatter">The <see cref="QueryStringFormatter"/> instance used to format name / value pairs.</param>
-        /// <returns>A formatted query-string.</returns>
-        public override string ParametersToQueryString(QueryStringFormatter formatter) {
-            var sb = new StringBuilder();
-            bool needsConcatenated = false;
+        /// <returns>A dictionary of key / value pairs with the data to include in the query string.</returns>
+        public override Dictionary<string, object> QueryParametersToInclude() {
+            var filteredParameters = new Dictionary<string, object>();
             if (!string.IsNullOrWhiteSpace(this.ClanName)) {
-                var namePair = formatter.Format("name", this.ClanName, true);
-                sb.Append(string.Concat(namePair.Key, "=", namePair.Value));
-                needsConcatenated = true;
+                filteredParameters.Add("name", this.ClanName);
             }
 
             if (this.WarFrequency != null) {
-                if (needsConcatenated) {
-                    sb.Append("&");
-                }
-
-                var warPair = formatter.Format("warFrequency", this.WarFrequency.Value.ToEnumMemberAttributeValue(), false);
-
-                sb.Append($"{warPair.Key}={warPair.Value}");
-                needsConcatenated = true;
+                filteredParameters.Add("warFrquency", this.WarFrequency.Value);
             }
 
             if (this.MaximumMembers >= 0) {
-                if (needsConcatenated) {
-                    sb.Append("&");
-                }
-
-                var maxMemberPair = formatter.Format("maxMembers", this.MaximumMembers, false);
-
-                sb.Append($"{maxMemberPair.Key}={maxMemberPair.Value}");
-                needsConcatenated = true;
+                filteredParameters.Add("maxMembers", this.MaximumMembers);
             }
 
             if (this.MinimumMembers >= 0) {
-                if (needsConcatenated) {
-                    sb.Append("&");
-                }
-
-                var minMemberPair = formatter.Format("minMembers", this.MinimumMembers, false);
-
-                sb.Append($"{minMemberPair.Key}={minMemberPair.Value}");
-                needsConcatenated = true;
+                filteredParameters.Add("minMembers", this.MinimumMembers);
             }
 
             if (this.LocationId >= 0) {
-                if (needsConcatenated) {
-                    sb.Append("&");
-                }
-
-                var locationIdPair = formatter.Format("locationId", this.LocationId, false);
-
-                sb.Append($"{locationIdPair.Key}={locationIdPair.Value}");
-                needsConcatenated = true;
+                filteredParameters.Add("locationId", this.LocationId);
             }
 
             if (this.Limit >= 0) {
-                if (needsConcatenated) {
-                    sb.Append("&");
-                }
-
-                var limitPair = formatter.Format("limit", this.Limit, false);
-
-                sb.Append($"{limitPair.Key}={limitPair.Value}");
-                needsConcatenated = true;
+                filteredParameters.Add("limit", this.Limit);
             }
 
-            return sb.ToString();
-        } // end function ParametersToQueryString
+            return filteredParameters;
+        } // end function QueryParametersToInclude
 
         #endregion
 

@@ -1,4 +1,8 @@
-﻿using System.Web;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using ClashClient.Common.Extensions;
 
 namespace ClashClient.Net {
     /// <summary>
@@ -8,7 +12,9 @@ namespace ClashClient.Net {
         #region --Instance Variables--
 
         private string _apiToken;
-        private string _method;
+        private string _endpoint;
+        private Dictionary<string, object> _queryParameters;
+        private Dictionary<string, object> _urlParameters;
 
         #endregion
 
@@ -19,7 +25,9 @@ namespace ClashClient.Net {
         /// </summary>
         public ApiRequest() {
             this._apiToken = string.Empty;
-            this._method = string.Empty;
+            this._endpoint = string.Empty;
+            this._queryParameters = new Dictionary<string, object>();
+            this._urlParameters = new Dictionary<string, object>();
         } // end default constructor
 
         #endregion
@@ -32,7 +40,7 @@ namespace ClashClient.Net {
         /// <param name="formatter">The <see cref="QueryStringFormatter"/> instance used to parse parameters</param>
         /// <returns>A cache-key safe string to use for the name of this item if stored in cache.</returns>
         public virtual string ToCacheName(QueryStringFormatter formatter) {
-            return HttpUtility.UrlDecode($"{this.Method}_{this.ParametersToUrlPath()}_{this.ParametersToQueryString(formatter)}").Replace(" ", "_");
+            return HttpUtility.UrlDecode($"{this.Endpoint}_{this.ParametersToUrlPath()}_{this.ParametersToQueryString(formatter)}").Replace(" ", "_");
         } // end function ToCacheName
 
         /// <summary>
@@ -41,7 +49,28 @@ namespace ClashClient.Net {
         /// <param name="formatter">The <see cref="QueryStringFormatter"/> instance used to format property values for query string use.</param>
         /// <returns>A string formatted for a query-string in a URL.</returns>
         public virtual string ParametersToQueryString(QueryStringFormatter formatter) {
-            return string.Empty;
+            string returnValue = string.Empty;
+            var parametersToInclude = this.QueryParametersToInclude();
+            if (parametersToInclude.Any()) {
+                var keyValuePairs = new List<string>();
+                foreach(var key in parametersToInclude.Keys) { 
+                    object pairValue = null;
+                    if (parametersToInclude[key] != null && parametersToInclude[key].GetType().IsEnum) {
+                        pairValue = EnumExtensions.ToEnumMemberAttributeValue(parametersToInclude[key] as Enum);
+                    } else {
+                        pairValue = parametersToInclude[key];
+                    }
+
+                    var formattedPair = formatter.Format(key, pairValue);
+                    keyValuePairs.Add(string.Concat(formattedPair.Key, "=", formattedPair.Value));
+                }
+
+                if (keyValuePairs.Any()) {
+                    returnValue = string.Concat("?", string.Join("&", keyValuePairs));
+                }
+            }
+
+            return returnValue;
         } // end function ParametersToQueryString
 
         /// <summary>
@@ -49,8 +78,16 @@ namespace ClashClient.Net {
         /// </summary>
         /// <returns>A string (with leading "/") for the url arguments.</returns>
         public virtual string ParametersToUrlPath() {
-            return string.Empty;
+            return this.Endpoint;
         } // end function ParametersToUrlPath
+
+        /// <summary>
+        /// When overridden by a derived type, performs logic to determine which query string parameters should be included.  This method is leveraged by the default <see cref="ParametersToQueryString(QueryStringFormatter)"/> implementation.
+        /// </summary>
+        /// <returns>A filtered list of query string parameters to include.</returns>
+        public virtual Dictionary<string, object> QueryParametersToInclude() {
+            return this.QueryParameters;
+        } // end function QueryParametersToInclude
 
         #endregion
 
@@ -70,13 +107,29 @@ namespace ClashClient.Net {
         /// <summary>
         /// Gets or sets the method to invoke on the API.
         /// </summary>
-        public virtual string Method {
+        public string Endpoint {
             get {
-                return this._method;
+                return this._endpoint;
             } set {
-                this._method = value;
+                this._endpoint = value;
             }
-        } // end property Method
+        } // end property Endpoint
+
+        /// <summary>
+        /// Gets or sets the set of parameters to include in the query string (if any).
+        /// </summary>
+        public Dictionary<string, object> QueryParameters {
+            get => this._queryParameters;
+            set => this._queryParameters = value ?? new Dictionary<string, object>();
+        } // end property QueryParameters
+
+        /// <summary>
+        /// Gets or sets the set of parameters to append to the query-string of the URL.
+        /// </summary>
+        public Dictionary<string, object> UrlParameters {
+            get => this._urlParameters;
+            set => this._urlParameters = value ?? new Dictionary<string, object>();
+        } // end property UrlParameters
 
         #endregion
     } // end class ApiRequest

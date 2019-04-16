@@ -52,6 +52,7 @@ namespace ClashClient.Net {
         /// <typeparam name="TResponse">The type of response object expected back from the API.</typeparam>
         /// <param name="apiRequest">The <see cref="ApiRequest"/> that contains the data used to customize the API call.</param>
         /// <returns>A new <see cref="ApiResponse"/> instance with the results of the API call.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "Newtonsoft has made the Dispose method protected so the normal nested try/catch pattern for nested usings can't be used.")]
         public virtual ApiResponse<TResponse> Load<TResponse>(ApiRequest apiRequest) where TResponse : class {
             if (apiRequest == null) {
                 throw new ArgumentNullException("apiRequest", "No request was provided.");
@@ -88,13 +89,13 @@ namespace ClashClient.Net {
                                 } catch (JsonSerializationException jse) {
                                     workingResponse.Successful = false;
                                     Log.Error("Unable to deserialize API response.", jse);
-                                    responseMessages.Add(new ApiMessage($"Unable to serialize the API response: {jse.Message}.  See the logs for more information.", "3.001.001", ApiMessageCategory.Failure));
+                                    responseMessages.Add(new ApiMessage($"Unable to serialize the API response: {jse.Message}.  See the logs for more information.", "3.001.001", ApiMessageCategory.Fault, ApiMessageCategory.RequiresElevation));
                                 }
                             }
                         }
                     } else {
                         workingResponse.Successful = true;
-                        responseMessages.Add(new ApiMessage("No reponse body received from API.", "2.001.001", ApiMessageCategory.Problem));
+                        responseMessages.Add(new ApiMessage("No reponse body received from API.", "2.001.001", ApiMessageCategory.NoData, ApiMessageCategory.RequiresElevation));
                     }
                 } catch (WebException wex) {
                     workingResponse.Successful = false;
@@ -104,16 +105,16 @@ namespace ClashClient.Net {
                         if (errorResponse.StatusCode == HttpStatusCode.BadRequest || errorResponse.StatusCode == HttpStatusCode.Forbidden || errorResponse.StatusCode == HttpStatusCode.InternalServerError || errorResponse.StatusCode == HttpStatusCode.NotFound || errorResponse.StatusCode == HttpStatusCode.ServiceUnavailable) {
                             var errorDetail = this.ParseErrorResponse(errorResponse);
                             if (errorDetail != null) {
-                                responseMessages.Add(new ApiMessage($"Error Detail: {errorDetail.Reason} - {errorDetail.Message}", "3.001.004", ApiMessageCategory.Failure));
+                                responseMessages.Add(new ApiMessage($"Error Detail: {errorDetail.Reason} - {errorDetail.Message}", "3.001.004", ApiMessageCategory.Fault, ApiMessageCategory.RequiresElevation));
                             } else {
                                 Log.Warn($"Unable to read the error response from the API.");
-                                responseMessages.Add(new ApiMessage($"Unable to read the response from the API: {request.RequestUri}.", "3.001.005", ApiMessageCategory.Failure));
+                                responseMessages.Add(new ApiMessage($"Unable to read the response from the API: {request.RequestUri}.", "3.001.005", ApiMessageCategory.Fault, ApiMessageCategory.RequiresElevation));
                             }
                         } else {
-                            responseMessages.Add(new ApiMessage($"An unknown status was returned from the API: {errorResponse.StatusCode}.", "3.001.002", ApiMessageCategory.Failure));
+                            responseMessages.Add(new ApiMessage($"An unknown status was returned from the API: {errorResponse.StatusCode}.", "3.001.002", ApiMessageCategory.Fault, ApiMessageCategory.RequiresElevation));
                         }
                     } else {
-                        responseMessages.Add(new ApiMessage($"The API response is not available or could not be found for endpoint: {request.RequestUri}.", "3.001.003", ApiMessageCategory.Failure));
+                        responseMessages.Add(new ApiMessage($"The API response is not available or could not be found for endpoint: {request.RequestUri}.", "3.001.003", ApiMessageCategory.Fault, ApiMessageCategory.RequiresElevation));
                     }
                 } finally {
 
@@ -151,17 +152,13 @@ namespace ClashClient.Net {
 
             if (this.ConfigurationProvider.TryGetValue(ConfigurationKeys.BaseApiUrlKey, out baseUrl)) {
                 if (this.ConfigurationProvider.TryGetValue(ConfigurationKeys.ApiVersionKey, out version)) {
-                    string apiUrl = $"{baseUrl}/{version}/{apiRequest.Method}".Replace("///", "/");
+                    string apiUrl = $"{baseUrl}/{version}/{apiRequest.ParametersToUrlPath()}".Replace("///", "/");
                     string parameters = apiRequest.ParametersToQueryString(new QueryStringFormatter());
-                    string urlArgs = apiRequest.ParametersToUrlPath();
                     if (this.ConfigurationProvider.TryGetValue(ConfigurationKeys.ApiTokenKey, out apiToken)) {
                         string targetUrl = apiUrl;
-                        if (!string.IsNullOrWhiteSpace(urlArgs)) {
-                            targetUrl += urlArgs;
-                        }
 
                         if (!string.IsNullOrWhiteSpace(parameters)) {
-                            targetUrl += string.Concat("?", parameters);
+                            targetUrl += parameters;
                         }
 
                         request = (HttpWebRequest)WebRequest.Create(targetUrl);
@@ -185,6 +182,7 @@ namespace ClashClient.Net {
         /// Parses the API response when an error occurs.
         /// </summary>
         /// <returns>A new instance of the <see cref="ErrorResponse"/> type from the data in the <param name="webResponse">webResponse</param>.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "Newtonsoft has made the Dispose method protected so the normal nested try/catch pattern for nested usings can't be used.")]
         protected virtual ErrorResponse ParseErrorResponse(HttpWebResponse webResponse) {
             var response = new ErrorResponse();
             string data = string.Empty;

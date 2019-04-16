@@ -43,7 +43,7 @@ namespace ClashClient.Net {
             }
 
             if (!allowEmptyValue && value == null) {
-                throw new ArgumentNullException(nameof(value), "No value provided.");
+                throw new ArgumentNullException(nameof(value), "$No value provided for the query parameter {name} and the allowEmptyValue flag hasn't been set.");
             }
 
             KeyValuePair<string, string> formattedValue;
