@@ -75,7 +75,7 @@ namespace ClashClient.Clans {
         /// <summary>
         /// Gets or sets the experience level of this member.
         /// </summary>
-        [JsonProperty("experienceLevel")]
+        [JsonProperty("expLevel")]
         public virtual int ExperienceLevel {
             get => this._experienceLevel;
             set => this._experienceLevel = value;
