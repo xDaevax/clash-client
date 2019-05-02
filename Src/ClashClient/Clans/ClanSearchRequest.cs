@@ -16,6 +16,8 @@ namespace ClashClient.Clans {
         private string _clanName;
         private int _locationId;
         private int _maximumMembers;
+        private int _minimumClanLevel;
+        private int _minimumClanPoints;
         private int _minimumMembers;
         private WarFrequency? _warFrequency;
 
@@ -30,6 +32,8 @@ namespace ClashClient.Clans {
             this._clanName = string.Empty;
             this._locationId = -1;
             this._maximumMembers = -1;
+            this._minimumClanLevel = -1;
+            this._minimumClanPoints = -1;
             this._minimumMembers = -1;
             this._warFrequency = null;
             this.Endpoint = ClashEndpoints.ClanSearch;
@@ -72,6 +76,14 @@ namespace ClashClient.Clans {
                 filteredParameters.Add(JsonAnnotationHelper.GetJsonNameFromProperty(this.GetType().GetProperty(nameof(this.LocationId))), this.LocationId);
             }
 
+            if (this.MinimumClanPoints >= 0) {
+                filteredParameters.Add(JsonAnnotationHelper.GetJsonNameFromProperty(this.GetType().GetProperty(nameof(this.MinimumClanPoints))), this.MinimumClanPoints);
+            }
+
+            if (this.MinimumClanLevel >= 0) {
+                filteredParameters.Add(JsonAnnotationHelper.GetJsonNameFromProperty(this.GetType().GetProperty(nameof(this.MinimumClanLevel))), this.MinimumClanLevel);
+            }
+
             return filteredParameters;
         } // end function QueryParametersToInclude
 
@@ -108,6 +120,24 @@ namespace ClashClient.Clans {
             get => this._maximumMembers;
             set => this._maximumMembers = value;
         } // end property MaximumMembers
+
+        /// <summary>
+        /// Gets or sets the filter that excludes clans below a certain level.
+        /// </summary>
+        [JsonProperty("minClanLevel")]
+        public virtual int MinimumClanLevel {
+            get => this._minimumClanLevel;
+            set => this._minimumClanLevel = value;
+        } // end property MinimumClanLevel
+
+        /// <summary>
+        /// Gets or sets the minimum point filter for clans returned in the results.
+        /// </summary>
+        [JsonProperty("minClanPoints")]
+        public virtual int MinimumClanPoints {
+            get => this._minimumClanPoints;
+            set => this._minimumClanPoints = value;
+        } // end property MinimumClanPoints
 
         /// <summary>
         /// Gets or sets the minimum number of members for the resulting clans to have.
