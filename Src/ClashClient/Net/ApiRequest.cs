@@ -86,7 +86,7 @@ namespace ClashClient.Net {
         /// </summary>
         /// <returns>A filtered list of query string parameters to include.</returns>
         public virtual Dictionary<string, object> QueryParametersToInclude() {
-            return this.QueryParameters;
+            return new Dictionary<string, object>();
         } // end function QueryParametersToInclude
 
         #endregion

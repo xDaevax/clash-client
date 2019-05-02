@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using ClashClient.Annotations;
 using ClashClient.Net;
 using Newtonsoft.Json;
 
@@ -8,11 +10,10 @@ namespace ClashClient.Clans {
     /// Request type that contains the potential parameters used to perform a clan search request.
     /// </summary>
     [Serializable]
-    public class ClanSearchRequest : ApiRequest {
+    public class ClanSearchRequest : ApiCollectionRequest {
         #region --Instance Variables--
 
         private string _clanName;
-        private int _limit;
         private int _locationId;
         private int _maximumMembers;
         private int _minimumMembers;
@@ -27,7 +28,6 @@ namespace ClashClient.Clans {
         /// </summary>
         public ClanSearchRequest() {
             this._clanName = string.Empty;
-            this._limit = -1;
             this._locationId = -1;
             this._maximumMembers = -1;
             this._minimumMembers = -1;
@@ -45,28 +45,31 @@ namespace ClashClient.Clans {
         /// <returns>A dictionary of key / value pairs with the data to include in the query string.</returns>
         public override Dictionary<string, object> QueryParametersToInclude() {
             var filteredParameters = new Dictionary<string, object>();
+            var baseParameters = base.QueryParametersToInclude();
+            if (baseParameters.Any()) {
+                foreach(var key in baseParameters.Keys) {
+                    filteredParameters.Add(key, baseParameters[key]);
+                }
+            }
+
             if (!string.IsNullOrWhiteSpace(this.ClanName)) {
-                filteredParameters.Add("name", this.ClanName);
+                filteredParameters.Add(JsonAnnotationHelper.GetJsonNameFromProperty(this.GetType().GetProperty(nameof(this.ClanName))), this.ClanName);
             }
 
             if (this.WarFrequency != null) {
-                filteredParameters.Add("warFrquency", this.WarFrequency.Value);
+                filteredParameters.Add(JsonAnnotationHelper.GetJsonNameFromProperty(this.GetType().GetProperty(nameof(this.WarFrequency))), this.WarFrequency.Value);
             }
 
             if (this.MaximumMembers >= 0) {
-                filteredParameters.Add("maxMembers", this.MaximumMembers);
+                filteredParameters.Add(JsonAnnotationHelper.GetJsonNameFromProperty(this.GetType().GetProperty(nameof(this.MaximumMembers))), this.MaximumMembers);
             }
 
             if (this.MinimumMembers >= 0) {
-                filteredParameters.Add("minMembers", this.MinimumMembers);
+                filteredParameters.Add(JsonAnnotationHelper.GetJsonNameFromProperty(this.GetType().GetProperty(nameof(this.MinimumMembers))), this.MinimumMembers);
             }
 
             if (this.LocationId >= 0) {
-                filteredParameters.Add("locationId", this.LocationId);
-            }
-
-            if (this.Limit >= 0) {
-                filteredParameters.Add("limit", this.Limit);
+                filteredParameters.Add(JsonAnnotationHelper.GetJsonNameFromProperty(this.GetType().GetProperty(nameof(this.LocationId))), this.LocationId);
             }
 
             return filteredParameters;
@@ -87,15 +90,6 @@ namespace ClashClient.Clans {
                 this._clanName = value;
             }
         } // end property ClanName
-
-        /// <summary>
-        /// Gets or sets the maximum number of results to return.
-        /// </summary>
-        [JsonProperty("limit")]
-        public virtual int Limit {
-            get => this._limit;
-            set => this._limit = value;
-        } // end property Limit
 
         /// <summary>
         /// Gets or sets the location id search filter (-1 if not specified the argument will not be passed).

@@ -65,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Annotations\JsonAnnotationHelper.cs" />
     <Compile Include="Clans\BadgeInfo.cs" />
     <Compile Include="Clans\ClanInfoRequest.cs" />
     <Compile Include="Clans\ClanLocation.cs" />
@@ -81,12 +82,15 @@
     <Compile Include="Configuration\InMemoryConfigurationProvider.cs" />
     <Compile Include="ErrorResponse.cs" />
     <Compile Include="Net\ApiClient.cs" />
+    <Compile Include="Net\ApiCollectionRequest.cs" />
     <Compile Include="Net\ApiMessage.cs" />
     <Compile Include="Net\ApiMessageCategory.cs" />
     <Compile Include="Net\ApiRequest.cs" />
     <Compile Include="Net\ApiResponse.cs" />
     <Compile Include="Net\ClashEndpoints.cs" />
     <Compile Include="Net\IApiClient.cs" />
+    <Compile Include="Net\Pager.cs" />
+    <Compile Include="Net\PagingCursor.cs" />
     <Compile Include="Net\QueryStringFormatter.cs" />
     <Compile Include="Players\LeageResult.cs" />
     <Compile Include="Players\PlayerSummary.cs" />
