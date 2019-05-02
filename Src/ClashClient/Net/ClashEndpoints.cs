@@ -20,6 +20,10 @@
         /// </summary>
         public const string ClanMembers = "clans/{0}/members";
 
+        /// <summary>
+        /// The war log information for the clan in the form of clans/{tag}/warlog.
+        /// </summary>
+        public const string ClanWarLog = "clans/{0}/warlog";
 
         #endregion
     } // end class ClashEndpoints

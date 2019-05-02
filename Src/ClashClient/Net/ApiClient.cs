@@ -39,6 +39,9 @@ namespace ClashClient.Net {
             this._configurationProvider = configurationProvider;
             this._serializer = new JsonSerializer();
             this.Serializer.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy()));
+            this.Serializer.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+            this.Serializer.DateFormatString = "yyyyMMddTHHmmss.fffZ";
+            this.Serializer.NullValueHandling = NullValueHandling.Ignore;
             this._cacheProvider = cacheProvider;
         } // end defaualt constructor
 
@@ -81,7 +84,7 @@ namespace ClashClient.Net {
 
                     if (!string.IsNullOrWhiteSpace(responseContents)) {
                         using (var stringReader = new StringReader(responseContents)) {
-                            using (var jsonReader = new JsonTextReader(stringReader)) {
+                            using (var jsonReader = new JsonTextReader(stringReader) { DateParseHandling = DateParseHandling.DateTimeOffset, DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind } ) {
                                 try {
                                     workingResponse.Successful = true;
                                     workingResponse.Data = this.Serializer.Deserialize<TResponse>(jsonReader);

@@ -75,6 +75,9 @@
     <Compile Include="Clans\ClanResult.cs" />
     <Compile Include="Clans\ClanSearchRequest.cs" />
     <Compile Include="Clans\ClanSearchResponse.cs" />
+    <Compile Include="Clans\ClanWarEntry.cs" />
+    <Compile Include="Clans\ClanWarLogRequest.cs" />
+    <Compile Include="Clans\ClanWarLogResponse.cs" />
     <Compile Include="Clans\DetailedClanResult.cs" />
     <Compile Include="Clans\MembershipType.cs" />
     <Compile Include="Clans\WarFrequency.cs" />
@@ -96,6 +99,10 @@
     <Compile Include="Players\PlayerSummary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchResponse.cs" />
+    <Compile Include="War\WarAttack.cs" />
+    <Compile Include="War\WarClanResult.cs" />
+    <Compile Include="War\WarMember.cs" />
+    <Compile Include="War\WarOutcome.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="package.nuspec" />
