@@ -40,7 +40,7 @@ namespace ClashClient.Net {
         /// <param name="formatter">The <see cref="QueryStringFormatter"/> instance used to parse parameters</param>
         /// <returns>A cache-key safe string to use for the name of this item if stored in cache.</returns>
         public virtual string ToCacheName(QueryStringFormatter formatter) {
-            return HttpUtility.UrlDecode($"{this.Endpoint}_{this.ParametersToUrlPath()}_{this.ParametersToQueryString(formatter)}").Replace(" ", "_");
+            return HttpUtility.UrlDecode($"{this.ParametersToUrlPath()}_{this.ParametersToQueryString(formatter)}").Replace(" ", "_");
         } // end function ToCacheName
 
         /// <summary>
