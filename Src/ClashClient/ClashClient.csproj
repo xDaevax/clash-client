@@ -96,6 +96,9 @@
     <Compile Include="Net\Pager.cs" />
     <Compile Include="Net\PagingCursor.cs" />
     <Compile Include="Net\QueryStringFormatter.cs" />
+    <Compile Include="Players\Achievement.cs" />
+    <Compile Include="Players\UnitInfo.cs" />
+    <Compile Include="Players\VillageTarget.cs" />
     <Compile Include="Players\DetailedPlayerResult.cs" />
     <Compile Include="Players\LeageResult.cs" />
     <Compile Include="Players\PlayerInfoRequest.cs" />

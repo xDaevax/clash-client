@@ -7,6 +7,7 @@
   <Namespace>ClashClient.Clans</Namespace>
   <Namespace>ClashClient.Common.Caching</Namespace>
   <Namespace>ClashClient.Net</Namespace>
+  <Namespace>ClashClient.Players</Namespace>
   <AppConfig>
     <Content>
       <configuration>
@@ -45,8 +46,9 @@ void Main() {
     
     var searchRequest = new ClanSearchRequest() { ClanName = "Pretty Useless", WarFrequency = WarFrequency.Unknown, MinimumMembers = 20, Limit = 20  };
     var detailRequest = new ClanInfoRequest() { Tag = "#9RP9PLY0" };
-    var memberRequest = new ClanMembersRequest() { Tag = "#9RP9PLY0", Limit = 5 };
-    var warLogRequest = new ClanWarLogRequest() { Tag = "#9RP9PLY0" };
+    var memberRequest = new ClanMembersRequest() { Tag = "#9RP9PLY0" };
+    var warLogRequest = new ClanWarLogRequest() { Tag = "#9RP9PLY0", Limit = 100 };
+    var playerRequest = new PlayerInfoRequest() { Tag = "#JY2LJVRU" };
     
     ApiClient client = new ApiClient(configProvider, cacheProvider);
     
@@ -54,6 +56,7 @@ void Main() {
     var detailResponse = client.Load<DetailedClanResult>(detailRequest);
     var memberResponse = client.Load<ClanMembersResponse>(memberRequest);
     var warLogResponse = client.Load<ClanWarLogResponse>(warLogRequest);
+    var playerResponse = client.Load<DetailedPlayerResult>(playerRequest);
     
     response.Dump();
     var nextPage = new ClanSearchRequest() { ClanName = "Pretty Useless", WarFrequency = WarFrequency.Unknown, MinimumMembers = 20, Limit = 20, After = response.Data.Pager.Cursors.After };
@@ -62,6 +65,7 @@ void Main() {
     detailResponse.Dump();
     memberResponse.Dump();
     warLogResponse.Dump();
+    playerResponse.Dump();
 
     var items = cacheProvider.GetCacheItemInfo(new List<string>() { $"ApiResponse_{searchRequest.ToCacheName(new QueryStringFormatter())}", $"ApiResponse_{detailRequest.ToCacheName(new QueryStringFormatter())}", $"ApiResponse_{memberRequest.ToCacheName(new QueryStringFormatter()) }", $"ApiResponse_{nextPage.ToCacheName(new QueryStringFormatter()) }" });
     items.Dump();

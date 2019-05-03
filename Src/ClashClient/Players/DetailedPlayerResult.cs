@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using ClashClient.Clans;
 using Newtonsoft.Json;
 
@@ -10,6 +11,7 @@ namespace ClashClient.Players {
     public class DetailedPlayerResult : PlayerSummary {
         #region --Fields--
 
+        private Collection<Achievement> _achievements;
         private int _attackWins;
         private int _bestTrophies;
         private int _bestVersusTrophies;
@@ -18,8 +20,11 @@ namespace ClashClient.Players {
         private int _defenseWins;
         private int _donations;
         private int _donationsReceived;
+        private Collection<UnitInfo> _heroes;
         private string _role;
+        private Collection<UnitInfo> _spells;
         private int _townhallLevel;
+        private Collection<UnitInfo> _troops;
         private int _trophies;
         private int _versusBattleWinCount;
         private int _versusBattleWins;
@@ -34,6 +39,7 @@ namespace ClashClient.Players {
         /// Initializes a new instance of the <see cref="DetailedPlayerResult"/> class.
         /// </summary>
         public DetailedPlayerResult() : base() {
+            this._achievements = new Collection<Achievement>();
             this._attackWins = 0;
             this._bestTrophies = 0;
             this._bestVersusTrophies = 0;
@@ -42,8 +48,11 @@ namespace ClashClient.Players {
             this._defenseWins = 0;
             this._donations = 0;
             this._donationsReceived = 0;
+            this._heroes = new Collection<UnitInfo>();
             this._role = string.Empty;
+            this._spells = new Collection<UnitInfo>();
             this._townhallLevel = 0;
+            this._troops = new Collection<UnitInfo>();
             this._trophies = 0;
             this._versusBattleWinCount = 0;
             this._versusBattleWins = 0;
@@ -54,6 +63,15 @@ namespace ClashClient.Players {
         #endregion
 
         #region --Properties--
+
+        /// <summary>
+        /// Gets or sets the set of <see cref="Achievement"/> instances with information about this player's achievement progress.
+        /// </summary>
+        [JsonProperty("achievements")]
+        public Collection<Achievement> Achievements {
+            get => this._achievements;
+            set => this._achievements = value ?? new Collection<Achievement>();
+        } // end property Achievements
 
         /// <summary>
         /// Gets or sets the number of attacks win this player has this season.
@@ -128,6 +146,15 @@ namespace ClashClient.Players {
         } // end property DonationsReceived
 
         /// <summary>
+        /// Gets or sets the collection of <see cref="UnitInfo"/> instances with information about the unlocked heroes for this player and their levels.
+        /// </summary>
+        [JsonProperty("heroes")]
+        public Collection<UnitInfo> Heroes {
+            get => this._heroes;
+            set => this._heroes = value ?? new Collection<UnitInfo>();
+        } // end property Heroes
+
+        /// <summary>
         /// Gets or sets the role of this player in their current clan (if any).
         /// </summary>
         [JsonProperty("role")]
@@ -137,6 +164,15 @@ namespace ClashClient.Players {
         } // end property Role
 
         /// <summary>
+        /// Gets or sets the collection of <see cref="UnitInfo"/> instances with information about the unlocked spells for this player and their levels.
+        /// </summary>
+        [JsonProperty("spells")]
+        public Collection<UnitInfo> Spells {
+            get => this._spells;
+            set => this._spells = value ?? new Collection<UnitInfo>();
+        } // end property Spells
+
+        /// <summary>
         /// Gets or sets the current town hall level for this player.
         /// </summary>
         [JsonProperty("townhallLevel")]
@@ -144,6 +180,15 @@ namespace ClashClient.Players {
             get => this._townhallLevel;
             set => this._townhallLevel = value;
         } // end property TownhallLevel
+
+        /// <summary>
+        /// Gets or sets the collection of <see cref="UnitInfo"/> instances with information about the unlocked troops for this player and their levels.
+        /// </summary>
+        [JsonProperty("troops")]
+        public Collection<UnitInfo> Troops {
+            get => this._troops;
+            set => this._troops = value ?? new Collection<UnitInfo>();
+        } // end property Troops
 
         /// <summary>
         /// Gets or sets the number of trophies this player has.
