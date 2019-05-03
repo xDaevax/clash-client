@@ -133,5 +133,8 @@ This example uses the `InMemoryConfigurationProvider`.  It is recommended to imp
     var response = client.Load<ClanSearchResponse>(searchRequest);
 ```
 
+## Further Reading
+For more detailed integration guides and information, see the relevant section in the [Wiki](https://github.com/xDaevax/clash-client/wiki)
+
 ## Disclaimer
 This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information see Supercell's Fan Content Policy: www.supercell.com/fan-content-policy.
