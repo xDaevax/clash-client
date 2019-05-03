@@ -1,31 +1,39 @@
 <?xml version="1.0"?>
 <package>
-  <metadata>
-    <id>ClashClient</id>
-    <version>0.0.4</version>
-    <title>ClashClient</title>
-    <authors>xDaevax</authors>
-    <owners>xDaevax</owners>
-    <licenseUrl>https://github.com/xDaevax/clash-client/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/xDaevax/clash-client</projectUrl>
-    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Client library for consuming the Clash of Clans API</description>
-    <releaseNotes>Features
-- Added Player information
-- Added War Log information
-- Added the ability to bypass cached data
-- Search query paging support
+    <metadata>
+        <id>ClashClient</id>
+        <version>0.0.4.1</version>
+        <title>ClashClient</title>
+        <authors>xDaevax</authors>
+        <owners>xDaevax</owners>
+        <licenseUrl>https://github.com/xDaevax/clash-client/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/xDaevax/clash-client</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <language>en-US</language>
+        <description>Client library for consuming the Clash of Clans API</description>
+        <releaseNotes>
+            Features
+            - Added Player information
+            - Added War Log information
+            - Added the ability to bypass cached data
+            - Search query paging support
 
-Bug Fixes:
-- Removed redundant endpoint in cache name
-- Corrected some incorrect json property names for experience level
-- Fixed some types to have a common base and reduce duplicate code</releaseNotes>
-    <copyright>Copyright 2019</copyright>
-    <tags>clash-of-clans</tags>
-    <dependencies>
-      <dependency id="Newtonsoft.Json" version="11.0" />
-      <dependency id="log4net" version="2.0" />
-    </dependencies>
-  </metadata>
+            Bug Fixes:
+            - Removed redundant endpoint in cache name
+            - Corrected some incorrect json property names for experience level
+            - Fixed some types to have a common base and reduce duplicate code
+        </releaseNotes>
+        <copyright>Copyright 2019</copyright>
+        <tags>clash-of-clans</tags>
+        <dependencies>
+            <dependency id="Newtonsoft.Json" version="12.0" />
+            <dependency id="log4net" version="2.0" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\NuGet\ClashClient.dll" target="lib\net471" />
+        <file src="bin\NuGet\ClashClient.xml" target="lib\net471" />
+        <file src="bin\NuGet\ClashClient.Common.dll" target="lib\net471" />
+        <file src="bin\NuGet\ClashClient.Common.xml" target="lib\net471" />
+    </files>
 </package>
