@@ -36,6 +36,42 @@ Depending on how you set your configuration, the following keys are required for
 |--|--|--|
 |Caching_Enabled|true / false|Disabled if not specified.  It is recommended to use caching in your production environment where possible
 
+#### Logging
+
+The library is setup to use [log4net](https://logging.apache.org/log4net/) for logging purposes.  The log4net library is very flexible in it's logging capabilities and reviewing all of them is already done well in the log4net documentation.  You don't have to record any log information from the library but if you need to debug or want to enable logging, you have to configure it within your application.  For a quick-start, here is an example configuration in a web.config file that will write to a formatted log file, automatically incrementing a log file number when the file exceeds 10MB:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  For more information on how to configure your ASP.NET application, please visit
+  https://go.microsoft.com/fwlink/?LinkId=301879
+  -->
+<configuration>
+  <configSections>
+    <section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler, log4net" />
+  </configSections>
+  ...
+  <log4net>
+    <appender name="RollingLogFileAppender" type="log4net.Appender.RollingFileAppender">
+      <file value="logs\debug.log" />
+      <appendToFile value="true" />
+      <rollingStyle value="size" />
+      <maxSizeRollBackups value="30" />
+      <maximumFileSize value="10MB" />
+      <layout type="log4net.Layout.PatternLayout">
+        <conversionPattern value="[%date %-2thread %-5level %-12logger %-10method] %message%newline" />
+      </layout>
+      <StaticLogFileName value="false" />
+      <countDirection value="1" />
+    </appender>
+    <root>
+      <level value="ALL" />
+      <appender-ref ref="RollingLogFileAppender" />
+    </root>
+  </log4net>
+</configuration>
+```
+
 #### Caching
 
 The application supports a configurable caching mechanism that leverages the .NET In-memory cache (though you can write your own implementation of the `ICacheProvider` and `ICacheSettings` interfaces).

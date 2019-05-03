@@ -6,19 +6,15 @@ namespace ClashClient.Clans {
     /// Class that represents and individual search result for a clan.
     /// </summary>
     [Serializable]
-    public class ClanResult {
+    public class ClanResult : ClanSummary {
         #region --Instance Variables--
 
-        private BadgeInfo _badges;
         private bool _isWarLogPublic;
-        private int _level;
         private ClanLocation _location;
         private int _members;
         private MembershipType _membershipType;
-        private string _name;
         private int _points;
         private int _requiredTrophies;
-        private string _tag;
         private int _versusPoints;
         private WarFrequency _warFrequency;
         private int _warLosses;
@@ -33,17 +29,13 @@ namespace ClashClient.Clans {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanResult"/> class.
         /// </summary>
-        public ClanResult() {
-            this._badges = new BadgeInfo();
+        public ClanResult() : base() {
             this._isWarLogPublic = false;
-            this._level = 1;
             this._location = new ClanLocation();
             this._members = -1;
             this._membershipType = MembershipType.Unknown;
-            this._name = string.Empty;
             this._points = -1;
             this._requiredTrophies = 0;
-            this._tag = string.Empty;
             this._versusPoints = 0;
             this._warFrequency = WarFrequency.Unknown;
             this._warLosses = 0;
@@ -57,15 +49,6 @@ namespace ClashClient.Clans {
         #region --Properties--
 
         /// <summary>
-        /// Gets or sets the <see cref="BadgeInfo"/> instance with badge URLs.
-        /// </summary>
-        [JsonProperty("badgeUrls")]
-        public virtual BadgeInfo Badges {
-            get => this._badges;
-            set => this._badges = value ?? new BadgeInfo();
-        } // end property Badges
-
-        /// <summary>
         /// Gets or sets a value indicating whether the clan's war log has been made public.
         /// </summary>
         [JsonProperty("isWarLogPublic")]
@@ -73,18 +56,6 @@ namespace ClashClient.Clans {
             get => this._isWarLogPublic;
             set => this._isWarLogPublic = value;
         } // end property IsWarLogPublic
-
-        /// <summary>
-        /// Gets or sets the level of the clan.
-        /// </summary>
-        [JsonProperty("clanLevel")]
-        public virtual int Level {
-            get {
-                return this._level;
-            } set {
-                this._level = value;
-            }
-        } // end property Level
 
         /// <summary>
         /// Gets or sets the location for the clan.
@@ -119,20 +90,6 @@ namespace ClashClient.Clans {
         } // end property MembershipType
 
         /// <summary>
-        /// Gets or sets the name of the clan.  This is the name the leader assigned when creating the clan.
-        /// </summary>
-        [JsonProperty("name")]
-        public virtual string Name {
-            get {
-                return this._name;
-            } set {
-                if (value != null) {
-                    this._name = value;
-                }
-            }
-        } // end property Name
-
-        /// <summary>
         /// Gets or sets the number of points the clan has.
         /// </summary>
         [JsonProperty("clanPoints")]
@@ -149,20 +106,6 @@ namespace ClashClient.Clans {
             get => this._requiredTrophies;
             set => this._requiredTrophies = value;
         } // end property RequiredTrophies
-
-        /// <summary>
-        /// Gets or sets the automatically game-assigned identifier or clan-tag for the clan.
-        /// </summary>
-        [JsonProperty("tag")]
-        public virtual string Tag {
-            get {
-                return this._tag;
-            } set {
-                if (value != null) {
-                    this._tag = value;
-                }
-            }
-        } // end property Tag
 
         /// <summary>
         /// Gets or sets the number of versus points the clan has.

@@ -36,7 +36,6 @@ namespace ClashClient.Clans {
             return string.Concat(string.Format(this.Endpoint, HttpUtility.UrlEncode(this.Tag)).Replace("//", "/"));
         } // end function ParametersToUrlPath
 
-
         #endregion
 
         #region --Properties--

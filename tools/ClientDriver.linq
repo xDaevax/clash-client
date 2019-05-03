@@ -7,6 +7,7 @@
   <Namespace>ClashClient.Clans</Namespace>
   <Namespace>ClashClient.Common.Caching</Namespace>
   <Namespace>ClashClient.Net</Namespace>
+  <Namespace>ClashClient.Players</Namespace>
   <AppConfig>
     <Content>
       <configuration>
@@ -39,26 +40,35 @@ void Main() {
     configProvider.AddValue("ApiVersion", "v1");
     configProvider.AddValue("Caching_Enabled", true);
     configProvider.AddValue("ClashAPI", "https://api.clashofclans.com");
-    configProvider.AddValue("ApiToken", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImU2N2E4MmQ0LWYzZGItNDFlZC05NTRlLTNjODMxYjk5ZWNiMSIsImlhdCI6MTU1MDYwNDMzMCwic3ViIjoiZGV2ZWxvcGVyL2U3YmViN2IxLTVlODktMjY3My1iNzE3LTc3OWJiODIxN2VlZiIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjE5OC4yNC4xMjcuMiJdLCJ0eXBlIjoiY2xpZW50In1dfQ.6iZltueue1a2SDZ_xgPUSfv_WfPHJyQz7ALazJed4mb1GeG26yJsGkuaDzGaR7MSZxf2ywkB_msZsNUSWqQ4VQ");
+    configProvider.AddValue("ApiToken", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImM1NjNmNTkxLTUyYzEtNDQyYS1iYjdiLWEwMTg0MGE3Njg5OSIsImlhdCI6MTU1NTM2MTgzNCwic3ViIjoiZGV2ZWxvcGVyL2U3YmViN2IxLTVlODktMjY3My1iNzE3LTc3OWJiODIxN2VlZiIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjEwNC4yMzAuMzMuMTczIl0sInR5cGUiOiJjbGllbnQifV19.xjkuVjPQLJH_8BgdqDqYa41nYjUsVCY-iXCT_toKSXvMkSLlcwR7IHTVHki-vbJ2eaOMh4dYM3G17quSNzdIZA");
     ICacheSettings cacheSettings = new CacheSettings(configProvider);
     ICacheProvider cacheProvider = new RuntimeCacheProvider(cacheSettings);
     
     var searchRequest = new ClanSearchRequest() { ClanName = "Pretty Useless", WarFrequency = WarFrequency.Unknown, MinimumMembers = 20, Limit = 20  };
     var detailRequest = new ClanInfoRequest() { Tag = "#9RP9PLY0" };
     var memberRequest = new ClanMembersRequest() { Tag = "#9RP9PLY0" };
+    var warLogRequest = new ClanWarLogRequest() { Tag = "#9RP9PLY0", Limit = 100 };
+    var playerRequest = new PlayerInfoRequest() { Tag = "#JY2LJVRU" };
+    
     ApiClient client = new ApiClient(configProvider, cacheProvider);
     
     var response = client.Load<ClanSearchResponse>(searchRequest);
     var detailResponse = client.Load<DetailedClanResult>(detailRequest);
     var memberResponse = client.Load<ClanMembersResponse>(memberRequest);
+    var warLogResponse = client.Load<ClanWarLogResponse>(warLogRequest);
+    var playerResponse = client.Load<DetailedPlayerResult>(playerRequest);
     
     response.Dump();
+    var nextPage = new ClanSearchRequest() { ClanName = "Pretty Useless", WarFrequency = WarFrequency.Unknown, MinimumMembers = 20, Limit = 20, After = response.Data.Pager.Cursors.After };
+    var nextPageResponse = client.Load<ClanSearchResponse>(nextPage);
+    nextPageResponse.Dump();
     detailResponse.Dump();
     memberResponse.Dump();
+    warLogResponse.Dump();
+    playerResponse.Dump();
 
-    var items = cacheProvider.GetCacheItemInfo(new List<string>() { $"ApiResponse_{searchRequest.ToCacheName(new QueryStringFormatter())}", $"ApiResponse_{detailRequest.ToCacheName(new QueryStringFormatter())}" });
+    var items = cacheProvider.GetCacheItemInfo(new List<string>() { $"ApiResponse_{searchRequest.ToCacheName(new QueryStringFormatter())}", $"ApiResponse_{detailRequest.ToCacheName(new QueryStringFormatter())}", $"ApiResponse_{memberRequest.ToCacheName(new QueryStringFormatter()) }", $"ApiResponse_{nextPage.ToCacheName(new QueryStringFormatter()) }" });
     items.Dump();
-
     
 }
 

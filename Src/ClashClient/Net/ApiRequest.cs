@@ -12,6 +12,7 @@ namespace ClashClient.Net {
         #region --Instance Variables--
 
         private string _apiToken;
+        private bool _bypassCache;
         private string _endpoint;
         private Dictionary<string, object> _queryParameters;
         private Dictionary<string, object> _urlParameters;
@@ -25,6 +26,7 @@ namespace ClashClient.Net {
         /// </summary>
         public ApiRequest() {
             this._apiToken = string.Empty;
+            this._bypassCache = false;
             this._endpoint = string.Empty;
             this._queryParameters = new Dictionary<string, object>();
             this._urlParameters = new Dictionary<string, object>();
@@ -40,7 +42,7 @@ namespace ClashClient.Net {
         /// <param name="formatter">The <see cref="QueryStringFormatter"/> instance used to parse parameters</param>
         /// <returns>A cache-key safe string to use for the name of this item if stored in cache.</returns>
         public virtual string ToCacheName(QueryStringFormatter formatter) {
-            return HttpUtility.UrlDecode($"{this.Endpoint}_{this.ParametersToUrlPath()}_{this.ParametersToQueryString(formatter)}").Replace(" ", "_");
+            return HttpUtility.UrlDecode($"{this.ParametersToUrlPath()}_{this.ParametersToQueryString(formatter)}").Replace(" ", "_");
         } // end function ToCacheName
 
         /// <summary>
@@ -86,7 +88,7 @@ namespace ClashClient.Net {
         /// </summary>
         /// <returns>A filtered list of query string parameters to include.</returns>
         public virtual Dictionary<string, object> QueryParametersToInclude() {
-            return this.QueryParameters;
+            return new Dictionary<string, object>();
         } // end function QueryParametersToInclude
 
         #endregion
@@ -103,6 +105,14 @@ namespace ClashClient.Net {
                 this._apiToken = value;
             }
         } // end property ApiToken
+
+        /// <summary>
+        /// Gets or sets a value that controls whether or not to bypass loading the data for this request from cache.  This will skep the check for the presence of the item in cache.  Does nothing if caching is disabled or not configured.
+        /// </summary>
+        public bool BypassCache {
+            get => this._bypassCache;
+            set => this._bypassCache = value;
+        } // end property BypassCache
 
         /// <summary>
         /// Gets or sets the method to invoke on the API.

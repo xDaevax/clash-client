@@ -2,10 +2,10 @@
 
 namespace ClashClient.Clans {
     /// <summary>
-    /// Type that represents the response from a request for clan member information.
+    /// Type the represents the contents of a clan's war log.
     /// </summary>
     [Serializable]
-    public class ClanMembersResponse : SearchResponse<ClanMemberResult> {
+    public class ClanWarLogResponse : SearchResponse<ClanWarEntry> {
         #region --Fields--
 
         #endregion
@@ -13,9 +13,9 @@ namespace ClashClient.Clans {
         #region --Constructors--
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClanMembersResponse"/> class.
+        /// Initializes a new instance of the <see cref="ClanWarLogResponse"/> class.
         /// </summary>
-        public ClanMembersResponse() : base() {
+        public ClanWarLogResponse() : base() {
         } // end default constructor
 
         #endregion
@@ -23,5 +23,5 @@ namespace ClashClient.Clans {
         #region --Properties--
 
         #endregion
-    } // end class ClanMembersResponse
+    } // end class ClanWarLogResponse
 } // end namespace

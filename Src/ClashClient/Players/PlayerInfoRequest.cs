@@ -1,11 +1,13 @@
-﻿using System.Web;
+﻿using System;
+using System.Web;
 using ClashClient.Net;
 
-namespace ClashClient.Clans {
+namespace ClashClient.Players {
     /// <summary>
-    /// Type used to request information about the members of a clan.
+    /// Type used to request detailed player information from the API.
     /// </summary>
-    public class ClanMembersRequest : ApiCollectionRequest {
+    [Serializable]
+    public class PlayerInfoRequest : ApiRequest {
         #region --Fields--
 
         private string _tag;
@@ -15,11 +17,11 @@ namespace ClashClient.Clans {
         #region --Constructors--
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClanMembersRequest"/> class.
+        /// Initializes a new instance of the <see cref="PlayerInfoRequest"/> class.
         /// </summary>
-        public ClanMembersRequest() : base() {
+        public PlayerInfoRequest() : base() {
             this._tag = string.Empty;
-            this.Endpoint = ClashEndpoints.ClanMembers;
+            this.Endpoint = ClashEndpoints.PlayerDetail;
         } // end default constructor
 
         #endregion
@@ -39,7 +41,7 @@ namespace ClashClient.Clans {
         #region --Properties--
 
         /// <summary>
-        /// Gets or sets the clan tag to load members for.
+        /// Gets or sets the tag of the player.
         /// </summary>
         public virtual string Tag {
             get => this._tag;
@@ -47,5 +49,5 @@ namespace ClashClient.Clans {
         } // end property Tag
 
         #endregion
-    } // end class ClanMembersRequest
+    } // end class PlayerInfoRequest
 } // end namespace
