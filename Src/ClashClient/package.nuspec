@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>ClashClient</id>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <title>ClashClient</title>
     <authors>xDaevax</authors>
     <owners>xDaevax</owners>
@@ -11,13 +11,16 @@
     <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Client library for consuming the Clash of Clans API</description>
-    <releaseNotes>Some breaking changes.
-- Updated the api categories to be an array and change some of the options
-- Tweaked the request models so the default endpoint is assumed and doesn't need to be specified
-- Changed the way the URL arguments and query strings are built
+    <releaseNotes>Features
+- Added Player information
+- Added War Log information
+- Added the ability to bypass cached data
+- Search query paging support
 
-Some new features
-- Added types for clan member lookup</releaseNotes>
+Bug Fixes:
+- Removed redundant endpoint in cache name
+- Corrected some incorrect json property names for experience level
+- Fixed some types to have a common base and reduce duplicate code</releaseNotes>
     <copyright>Copyright 2019</copyright>
     <tags>clash-of-clans</tags>
     <dependencies>
