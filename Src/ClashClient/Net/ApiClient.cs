@@ -66,10 +66,15 @@ namespace ClashClient.Net {
             HttpWebRequest request = null;
 
             request = this.BuildRequest(apiRequest);
+            var workingResponse = new ApiResponse<TResponse>();
+
+            CacheEntry<ApiResponse<TResponse>> cachedResponse = null;
 
             string cacheName = $"ApiResponse_{apiRequest.ToCacheName(new QueryStringFormatter())}";
-            var cachedResponse = this.CacheProvider.Read<ApiResponse<TResponse>>(cacheName);
-            var workingResponse = new ApiResponse<TResponse>();
+
+            if (!apiRequest.BypassCache) {
+                cachedResponse = this.CacheProvider.Read<ApiResponse<TResponse>>(cacheName);
+            }
 
             if (cachedResponse == null || !cachedResponse.CacheHit()) {
                 string responseContents = string.Empty;
