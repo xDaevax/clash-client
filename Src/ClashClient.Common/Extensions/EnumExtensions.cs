@@ -15,10 +15,10 @@ namespace ClashClient.Common.Extensions {
         /// <param name="enum">The enumeration being extended.</param>
         /// <returns>The value for the enumeration member attribute or the name of the enumeration as a string.</returns>
         public static string ToEnumMemberAttributeValue(this Enum @enum) {
-            string returnValue = string.Empty;
-            var attribute = @enum.GetType().GetMember(@enum.ToString()).FirstOrDefault()?.GetCustomAttributes(false).OfType<EnumMemberAttribute>().FirstOrDefault();
+            EnumMemberAttribute attribute = @enum?.GetType().GetMember(@enum.ToString()).FirstOrDefault()?.GetCustomAttributes(false).OfType<EnumMemberAttribute>().FirstOrDefault();
+            string returnValue;
             if (attribute == null) {
-                returnValue = @enum.ToString();
+                returnValue = @enum?.ToString();
             } else {
                 returnValue = attribute.Value;
             }

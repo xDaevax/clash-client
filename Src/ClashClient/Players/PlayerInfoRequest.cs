@@ -33,7 +33,7 @@ namespace ClashClient.Players {
         /// </summary>
         /// <returns>A string (with leading "/") for the url arguments.</returns>
         public override string ParametersToUrlPath() {
-            return string.Concat(string.Format(this.Endpoint, HttpUtility.UrlEncode(this.Tag)).Replace("//", "/"));
+            return string.Concat(string.Format(System.Threading.Thread.CurrentThread.CurrentCulture, this.Endpoint, HttpUtility.UrlEncode(this.Tag)).Replace("//", "/"));
         } // end function ParametersToUrlPath
 
         #endregion

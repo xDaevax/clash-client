@@ -11,7 +11,7 @@ namespace ClashClient.Common.Caching {
     /// Type that leverages the in-memory caching to store data in memory.  Implements the <see cref="ICacheProvider"/> type.
     /// </summary>
     public class RuntimeCacheProvider : ICacheProvider {
-        private static ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #region --Fields--
 
@@ -80,7 +80,7 @@ namespace ClashClient.Common.Caching {
                 }
 
                 CacheItemPolicy policy;
-                ICachePreferenceElement preferenceSetting = this.LoadPreferenceSetting(entry.CachePreference);
+                ICachePreferenceElement preferenceSetting = this.LoadPreferenceSetting(entry?.CachePreference ?? CachePreference.Default);
                 switch (entry.CachePreference) {
                     case CachePreference.ShortLivedSliding:
                     case CachePreference.ExtendedSliding:
@@ -119,7 +119,7 @@ namespace ClashClient.Common.Caching {
                     this.CacheStore.Set(new CacheItem(name, entry), policy);
                 }
             } else {
-                Log.DebugFormat("Skipped writing cache entry.  Caching is disabled in the configuration.");
+                Log.DebugFormat(System.Threading.Thread.CurrentThread.CurrentCulture, "Skipped writing cache entry.  Caching is disabled in the configuration.");
             }
         } // end method Set
 
@@ -171,17 +171,17 @@ namespace ClashClient.Common.Caching {
             }
 
             if (cacheStores != null && cacheStores.Any()) {
-                foreach (object cacheStore in cacheStores) {
+                foreach (var cacheStore in cacheStores) {
                     try {
                         Type cacheStoreType = cacheStore.GetType();
 
                         PropertyInfo targetType = cacheStoreType.GetProperty("Target", bindFlags);
 
-                        object storeTarget = targetType?.GetValue(cacheStore);
+                        var storeTarget = targetType?.GetValue(cacheStore);
 
                         FieldInfo lockField = targetType?.GetValue(cacheStore).GetType().GetField("_entriesLock", bindFlags);
 
-                        object lockObj = lockField?.GetValue(storeTarget);
+                        var lockObj = lockField?.GetValue(storeTarget);
                         if (lockObj != null) {
                             lock (lockObj) {
 
@@ -191,13 +191,13 @@ namespace ClashClient.Common.Caching {
                                 foreach (DictionaryEntry cacheItemEntry in entriesCollection) {
                                     Type cacheItemValueType = cacheItemEntry.Value.GetType();
 
-                                    string key = (string)cacheItemEntry.Key.GetType().GetProperty("Key", bindFlags).GetValue(cacheItemEntry.Key);
+                                    var key = (string)cacheItemEntry.Key.GetType().GetProperty("Key", bindFlags).GetValue(cacheItemEntry.Key);
                                     if (nameFilters.Any(t => string.Equals(key, t, StringComparison.OrdinalIgnoreCase))) {
                                         Log.Info($"Attempting to load cache information for the key: {key}.");
                                         PropertyInfo value = cacheItemValueType.GetProperty("Value", bindFlags);
-                                        var utcAbsoluteExpiry = cacheItemValueType.GetProperty("UtcAbsExp", bindFlags);
+                                        PropertyInfo utcAbsoluteExpiry = cacheItemValueType.GetProperty("UtcAbsExp", bindFlags);
                                         var valueInstance = value.GetValue(cacheItemEntry.Value);
-                                        var preference = CachePreference.Default;
+                                        CachePreference preference = CachePreference.Default;
                                         if (valueInstance != null && valueInstance.GetType().GetProperty("CachePreference") != null) {
                                             preference = (CachePreference)valueInstance.GetType().GetProperty("CachePreference").GetValue(valueInstance);
                                         }
@@ -248,14 +248,14 @@ namespace ClashClient.Common.Caching {
                     if (this.CacheStore.Contains(name)) {
                         lock (this._cacheLock) {
                             if (this.CacheStore.Contains(name)) {
-                                returnValue = Convert.ChangeType(this.CacheStore.Get(name), typeof(CacheEntry<TModel>)) as CacheEntry<TModel>;
+                                returnValue = Convert.ChangeType(this.CacheStore.Get(name), typeof(CacheEntry<TModel>), System.Threading.Thread.CurrentThread.CurrentCulture) as CacheEntry<TModel>;
                             }
                         }
                     }
                 }
 
                 if (returnValue == null) {
-                    returnValue = new CacheEntry<TModel>(null as TModel);
+                    returnValue = new CacheEntry<TModel>(null);
                 }
 
                 if (returnValue.CacheHit()) {
@@ -264,7 +264,7 @@ namespace ClashClient.Common.Caching {
                     Log.DebugFormat("{0} was not found in cache.", name);
                 }
             } else {
-                Log.DebugFormat("Skipped loading data from cache. Caching is diabled in the configuration.");
+                Log.DebugFormat(System.Threading.Thread.CurrentThread.CurrentCulture, "Skipped loading data from cache. Caching is disabled in the configuration.");
             }
 
             return returnValue;
@@ -277,16 +277,12 @@ namespace ClashClient.Common.Caching {
         /// <summary>
         /// Gets the in-memory cache.
         /// </summary>
-        protected MemoryCache CacheStore {
-            get => this._cacheStore;
-        } // end property CacheStore
+        protected MemoryCache CacheStore => this._cacheStore; // end property CacheStore
 
         /// <summary>
         /// Gets the injected <see cref="ICacheSettings"/> instance used to load custom cache configuration settings.
         /// </summary>
-        protected ICacheSettings CacheSettings {
-            get => this._cacheSettings;
-        } // end property CacheSettings
+        protected ICacheSettings CacheSettings => this._cacheSettings; // end property CacheSettings
 
         #endregion
     } // end class RuntimeCacheProvider

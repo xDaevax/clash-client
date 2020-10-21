@@ -62,9 +62,7 @@ namespace ClashClient.Clans {
         /// </summary>
         [JsonProperty("location")]
         public virtual ClanLocation Location {
-            get {
-                return this._location;
-            } set {
+            get => this._location; set {
                 if (value != null) {
                     this._location = value;
                 }
@@ -112,11 +110,7 @@ namespace ClashClient.Clans {
         /// </summary>
         [JsonProperty("clanVersusPoints")]
         public virtual int VersusPoints {
-            get {
-                return this._versusPoints;
-            } set {
-                this._versusPoints = value;
-            }
+            get => this._versusPoints; set => this._versusPoints = value;
         } // end property VersusPoints
 
         /// <summary>

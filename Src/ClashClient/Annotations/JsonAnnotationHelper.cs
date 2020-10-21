@@ -21,13 +21,13 @@ namespace ClashClient.Annotations {
                 throw new ArgumentNullException(nameof(property), "No property provided to load a JSON name for.");
             }
 
-            string returnValue = string.Empty;
+            var returnValue = string.Empty;
 
-            var jsonAttributes = property.GetCustomAttributes().Where(p => p is JsonPropertyAttribute).OfType<JsonPropertyAttribute>();
+            System.Collections.Generic.IEnumerable<JsonPropertyAttribute> jsonAttributes = property.GetCustomAttributes().Where(p => p is JsonPropertyAttribute).OfType<JsonPropertyAttribute>();
 
             if (jsonAttributes != null && jsonAttributes.Any()) {
                 // If we have more than one, it's luck of the draw
-                var attr = jsonAttributes.FirstOrDefault();
+                JsonPropertyAttribute attr = jsonAttributes.FirstOrDefault();
                 returnValue = attr.PropertyName;
             } else {
                 returnValue = property.Name;

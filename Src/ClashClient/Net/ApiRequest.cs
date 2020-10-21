@@ -51,20 +51,22 @@ namespace ClashClient.Net {
         /// <param name="formatter">The <see cref="QueryStringFormatter"/> instance used to format property values for query string use.</param>
         /// <returns>A string formatted for a query-string in a URL.</returns>
         public virtual string ParametersToQueryString(QueryStringFormatter formatter) {
-            string returnValue = string.Empty;
-            var parametersToInclude = this.QueryParametersToInclude();
+            var returnValue = string.Empty;
+            Dictionary<string, object> parametersToInclude = this.QueryParametersToInclude();
             if (parametersToInclude.Any()) {
                 var keyValuePairs = new List<string>();
-                foreach(var key in parametersToInclude.Keys) { 
-                    object pairValue = null;
+                foreach (var key in parametersToInclude.Keys) {
+                    object pairValue;
                     if (parametersToInclude[key] != null && parametersToInclude[key].GetType().IsEnum) {
                         pairValue = EnumExtensions.ToEnumMemberAttributeValue(parametersToInclude[key] as Enum);
                     } else {
                         pairValue = parametersToInclude[key];
                     }
 
-                    var formattedPair = formatter.Format(key, pairValue);
-                    keyValuePairs.Add(string.Concat(formattedPair.Key, "=", formattedPair.Value));
+                    if (formatter != null) {
+                        KeyValuePair<string, string> formattedPair = formatter.Format(key, pairValue);
+                        keyValuePairs.Add(string.Concat(formattedPair.Key, "=", formattedPair.Value));
+                    }
                 }
 
                 if (keyValuePairs.Any()) {
@@ -99,11 +101,7 @@ namespace ClashClient.Net {
         /// Gets or sets the token needed for authentication against the API.
         /// </summary>
         public string ApiToken {
-            get {
-                return this._apiToken;
-            } set {
-                this._apiToken = value;
-            }
+            get => this._apiToken; set => this._apiToken = value;
         } // end property ApiToken
 
         /// <summary>
@@ -118,11 +116,7 @@ namespace ClashClient.Net {
         /// Gets or sets the method to invoke on the API.
         /// </summary>
         public string Endpoint {
-            get {
-                return this._endpoint;
-            } set {
-                this._endpoint = value;
-            }
+            get => this._endpoint; set => this._endpoint = value;
         } // end property Endpoint
 
         /// <summary>

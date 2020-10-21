@@ -30,9 +30,7 @@ namespace ClashClient.TestHelpers {
         /// Gets or sets the descriptive name (not necessarily the code name) of the event.  This property will ignore setting null string values.
         /// </summary>
         public string Name {
-            get {
-                return this._name;
-            }
+            get => this._name;
             set {
                 if (!string.IsNullOrEmpty(value)) {
                     this._name = value;
@@ -43,11 +41,7 @@ namespace ClashClient.TestHelpers {
         /// <summary>
         /// Gets the context information for the currently executing test.
         /// </summary>
-        public TestContext TestContext {
-            get {
-                return TestContext.CurrentContext;
-            }
-        } // end property TestContext
+        public static TestContext TestContext => TestContext.CurrentContext; // end property TestContext
 
         #endregion
     } // end class TestEventArgs

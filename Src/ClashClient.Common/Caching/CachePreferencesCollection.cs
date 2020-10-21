@@ -47,7 +47,7 @@ namespace ClashClient.Common.Caching {
         /// <param name="preference">The <see cref="CachePreferenceElement"/> to remove.</param>
         public void Remove(CachePreferenceElement preference) {
             if (this.BaseIndexOf(preference) >= 0) {
-                this.BaseRemove(preference.Preference);
+                this.BaseRemove(preference?.Preference);
             }
         } // end overloaded method Remove
 
@@ -93,7 +93,7 @@ namespace ClashClient.Common.Caching {
         /// <param name="element">The <see cref="ConfigurationElement"/> whose key is being retrieved.</param>
         /// <returns>The key of the given <paramref name="element"/>.</returns>
         protected override object GetElementKey(ConfigurationElement element) {
-            return ((CachePreferenceElement)element).Preference;
+            return ((CachePreferenceElement)element)?.Preference;
         } // end function GetElementKey
 
         /// <summary>
@@ -130,25 +130,19 @@ namespace ClashClient.Common.Caching {
         /// </summary>
         /// <param name="name">The name of the element being retrieved.</param>
         /// <returns>The configuration element with the given <paramref name="name"/>.</returns>
-        public new CachePreferenceElement this[string name] {
-            get => (CachePreferenceElement)this.BaseGet((CachePreference)Enum.Parse(typeof(CachePreference), name));
-        } // end shadowed default string-based property
+        public new CachePreferenceElement this[string name] => (CachePreferenceElement)this.BaseGet((CachePreference)Enum.Parse(typeof(CachePreference), name)); // end shadowed default string-based property
 
         /// <summary>
         /// Default property that gets the configuration element with the specified <paramref name="preference"/>.
         /// </summary>
         /// <param name="preference">The <see cref="CachePreference"/> to retrieve.</param>
         /// <returns>The configuration element with the given <paramref name="preference"/>.</returns>
-        public CachePreferenceElement this[CachePreference preference] {
-            get => (CachePreferenceElement)this.BaseGet(preference);
-        } // end default enumeration-based property
+        public CachePreferenceElement this[CachePreference preference] => (CachePreferenceElement)this.BaseGet(preference); // end default enumeration-based property
 
         /// <summary>
         /// Gets the type of element collection.
         /// </summary>
-        public override ConfigurationElementCollectionType CollectionType {
-            get => ConfigurationElementCollectionType.AddRemoveClearMap;
-        } // end property CollectionType
+        public override ConfigurationElementCollectionType CollectionType => ConfigurationElementCollectionType.AddRemoveClearMap; // end property CollectionType
 
         #endregion
     } // end class CachePreferencesCollection

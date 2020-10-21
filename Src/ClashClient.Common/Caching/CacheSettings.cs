@@ -8,7 +8,7 @@ namespace ClashClient.Common.Caching {
     /// Type used to load custom cache settings from configuration.
     /// </summary>
     public class CacheSettings : ICacheSettings {
-        private static ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #region --Fields--
 
@@ -68,9 +68,7 @@ namespace ClashClient.Common.Caching {
         /// <summary>
         /// Gets the injected <see cref="IConfigurationProvider"/> instance used to load configuration information.
         /// </summary>
-        protected IConfigurationProvider ConfigurationProvider {
-            get => this._configurationProvider;
-        } // end property ConfigurationProvider
+        protected IConfigurationProvider ConfigurationProvider => this._configurationProvider; // end property ConfigurationProvider
 
         /// <summary>
         /// Gets the custom configuration section from the web.config.  This is lazy-initialized on the first call.

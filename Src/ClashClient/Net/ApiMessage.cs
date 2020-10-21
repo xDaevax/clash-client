@@ -40,7 +40,7 @@ namespace ClashClient.Net {
         /// <param name="apiStatusCode">A status code of the message. </param>
         public ApiMessage(string text, string apiStatusCode, params ApiMessageCategory[] categories) {
             this._text = text;
-            this._categories = (categories ?? new ApiMessageCategory[] { }).ToList();
+            this._categories = categories?.ToList() ?? new List<ApiMessageCategory>();
             this._apiStatusCode = apiStatusCode;
         } // end overloaded constructor
 

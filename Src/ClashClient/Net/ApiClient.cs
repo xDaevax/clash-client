@@ -58,26 +58,24 @@ namespace ClashClient.Net {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "Newtonsoft has made the Dispose method protected so the normal nested try/catch pattern for nested usings can't be used.")]
         public virtual ApiResponse<TResponse> Load<TResponse>(ApiRequest apiRequest) where TResponse : class {
             if (apiRequest == null) {
-                throw new ArgumentNullException("apiRequest", "No request was provided.");
+                throw new ArgumentNullException(nameof(apiRequest), "No request was provided.");
             }
 
             var response = new ApiResponse<TResponse>();
             var responseMessages = new List<ApiMessage>();
-            HttpWebRequest request = null;
-
-            request = this.BuildRequest(apiRequest);
+            HttpWebRequest request = this.BuildRequest(apiRequest);
             var workingResponse = new ApiResponse<TResponse>();
 
             CacheEntry<ApiResponse<TResponse>> cachedResponse = null;
 
-            string cacheName = $"ApiResponse_{apiRequest.ToCacheName(new QueryStringFormatter())}";
+            var cacheName = $"ApiResponse_{apiRequest.ToCacheName(new QueryStringFormatter())}";
 
             if (!apiRequest.BypassCache) {
                 cachedResponse = this.CacheProvider.Read<ApiResponse<TResponse>>(cacheName);
             }
 
             if (cachedResponse == null || !cachedResponse.CacheHit()) {
-                string responseContents = string.Empty;
+                var responseContents = string.Empty;
 
                 try {
                     using (var resp = (HttpWebResponse)request.GetResponse()) {
@@ -89,7 +87,7 @@ namespace ClashClient.Net {
 
                     if (!string.IsNullOrWhiteSpace(responseContents)) {
                         using (var stringReader = new StringReader(responseContents)) {
-                            using (var jsonReader = new JsonTextReader(stringReader) { DateParseHandling = DateParseHandling.DateTimeOffset, DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind } ) {
+                            using (var jsonReader = new JsonTextReader(stringReader) { DateParseHandling = DateParseHandling.DateTimeOffset, DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind }) {
                                 try {
                                     workingResponse.Successful = true;
                                     workingResponse.Data = this.Serializer.Deserialize<TResponse>(jsonReader);
@@ -111,7 +109,7 @@ namespace ClashClient.Net {
                     if (wex.Response is HttpWebResponse errorResponse) {
                         workingResponse.HttpStatusCode = (int)errorResponse.StatusCode;
                         if (errorResponse.StatusCode == HttpStatusCode.BadRequest || errorResponse.StatusCode == HttpStatusCode.Forbidden || errorResponse.StatusCode == HttpStatusCode.InternalServerError || errorResponse.StatusCode == HttpStatusCode.NotFound || errorResponse.StatusCode == HttpStatusCode.ServiceUnavailable) {
-                            var errorDetail = this.ParseErrorResponse(errorResponse);
+                            ErrorResponse errorDetail = this.ParseErrorResponse(errorResponse);
                             if (errorDetail != null) {
                                 responseMessages.Add(new ApiMessage($"Error Detail: {errorDetail.Reason} - {errorDetail.Message}", "3.001.004", ApiMessageCategory.Fault, ApiMessageCategory.RequiresElevation));
                             } else {
@@ -151,25 +149,21 @@ namespace ClashClient.Net {
         /// </summary>
         /// <param name="apiRequest">The <see cref="ApiRequest"/> that contains the data used to customize the API call.</param>
         /// <returns>A new instance of the <see cref="HttpWebRequest"/> class.</returns>
-        /// <exception cref="ConfigurationErrorsException">Thrown if the URL for the API isn't provided in configurataion.</exception>
+        /// <exception cref="ConfigurationErrorsException">Thrown if the URL for the API isn't provided in configuration.</exception>
         protected virtual HttpWebRequest BuildRequest(ApiRequest apiRequest) {
-            string baseUrl = string.Empty;
-            HttpWebRequest request = null;
-            string version = string.Empty;
-            string apiToken = string.Empty;
-
-            if (this.ConfigurationProvider.TryGetValue(ConfigurationKeys.BaseApiUrlKey, out baseUrl)) {
-                if (this.ConfigurationProvider.TryGetValue(ConfigurationKeys.ApiVersionKey, out version)) {
-                    string apiUrl = $"{baseUrl}/{version}/{apiRequest.ParametersToUrlPath()}".Replace("///", "/");
-                    string parameters = apiRequest.ParametersToQueryString(new QueryStringFormatter());
-                    if (this.ConfigurationProvider.TryGetValue(ConfigurationKeys.ApiTokenKey, out apiToken)) {
-                        string targetUrl = apiUrl;
+            HttpWebRequest request;
+            if (this.ConfigurationProvider.TryGetValue(ConfigurationKeys.BaseApiUrlKey, out string baseUrl)) {
+                if (this.ConfigurationProvider.TryGetValue(ConfigurationKeys.ApiVersionKey, out string version)) {
+                    var apiUrl = $"{baseUrl}/{version}/{apiRequest?.ParametersToUrlPath() ?? string.Empty}".Replace("///", "/");
+                    var parameters = apiRequest.ParametersToQueryString(new QueryStringFormatter());
+                    if (this.ConfigurationProvider.TryGetValue(ConfigurationKeys.ApiTokenKey, out string apiToken)) {
+                        var targetUrl = apiUrl;
 
                         if (!string.IsNullOrWhiteSpace(parameters)) {
                             targetUrl += parameters;
                         }
 
-                        request = (HttpWebRequest)WebRequest.Create(targetUrl);
+                        request = (HttpWebRequest)WebRequest.Create(new Uri(targetUrl));
                         request.Headers.Add("authorization", string.Concat("Bearer ", apiToken));
                         request.Accept = "application/json";
                     } else {
@@ -181,8 +175,7 @@ namespace ClashClient.Net {
             } else {
                 throw new ConfigurationErrorsException("Unable to load the API url.");
             }
-            
-            
+
             return request;
         } // end function BuildRequest
 
@@ -193,8 +186,8 @@ namespace ClashClient.Net {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "Newtonsoft has made the Dispose method protected so the normal nested try/catch pattern for nested usings can't be used.")]
         protected virtual ErrorResponse ParseErrorResponse(HttpWebResponse webResponse) {
             var response = new ErrorResponse();
-            string data = string.Empty;
-            using (var responseStream = webResponse.GetResponseStream()) {
+            var data = string.Empty;
+            using (Stream responseStream = webResponse?.GetResponseStream()) {
                 using (var reader = new StreamReader(responseStream)) {
                     data = reader.ReadToEnd();
                 }
@@ -216,27 +209,17 @@ namespace ClashClient.Net {
         /// <summary>
         /// Gets the injected <see cref="ICacheProvider"/> instance used to manage data in cache.
         /// </summary>
-        protected ICacheProvider CacheProvider {
-            get => this._cacheProvider;
-        } // end property CacheProvider
+        protected ICacheProvider CacheProvider => this._cacheProvider; // end property CacheProvider
 
         /// <summary>
         /// Gets the injected <see cref="IConfigurationProvider"/> instance used to load configuration data.
         /// </summary>
-        protected IConfigurationProvider ConfigurationProvider {
-            get {
-                return this._configurationProvider;
-            }
-        } // end property ConfigurationProvider
+        protected IConfigurationProvider ConfigurationProvider => this._configurationProvider; // end property ConfigurationProvider
 
         /// <summary>
         /// Gets the serializer instance used to read the response data from the API into strongly typed objects.
         /// </summary>
-        protected JsonSerializer Serializer {
-            get {
-                return this._serializer;
-            }
-        } // end property Serializer
+        protected JsonSerializer Serializer => this._serializer; // end property Serializer
 
         #endregion
     } // end class ApiClient

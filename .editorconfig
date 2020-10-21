@@ -119,10 +119,16 @@ csharp_space_between_method_call_name_and_opening_parenthesis = false
 csharp_space_between_method_call_empty_parameter_list_parentheses = false 
 # Wrapping preferences 
 csharp_preserve_single_line_statements = true 
-csharp_preserve_single_line_blocks = true 
+csharp_preserve_single_line_blocks = true
+# Analyzer rules
+dotnet_diagnostic.CA1707.severity = none
 ############################### 
 # VB Coding Conventions       # 
 ############################### 
+
+# IDE0059: Unnecessary assignment of a value
+csharp_style_unused_value_assignment_preference = discard_variable:suggestion
+
 [*.vb] 
 # Modifier preferences 
 visual_basic_preferred_modifier_order = Partial,Default,Private,Protected,Public,Friend,NotOverridable,Overridable,MustOverride,Overloads,Overrides,MustInherit,NotInheritable,Static,Shared,Shadows,ReadOnly,WriteOnly,Dim,Const,WithEvents,Widening,Narrowing,Custom,Async:suggestion 

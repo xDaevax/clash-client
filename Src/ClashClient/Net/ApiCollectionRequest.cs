@@ -36,7 +36,7 @@ namespace ClashClient.Net {
         /// </summary>
         /// <returns>A dictionary of key / value pairs with the data to include in the query string.</returns>
         public override Dictionary<string, object> QueryParametersToInclude() {
-            var returnValue = base.QueryParametersToInclude();
+            Dictionary<string, object> returnValue = base.QueryParametersToInclude();
             if (this.Limit != null) {
                 returnValue.Add(JsonAnnotationHelper.GetJsonNameFromProperty(this.GetType().GetProperty(nameof(this.Limit))), this.Limit.Value);
             }

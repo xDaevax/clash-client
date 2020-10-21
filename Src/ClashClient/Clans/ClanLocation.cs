@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace ClashClient.Clans {
     /// <summary>
@@ -37,11 +37,7 @@ namespace ClashClient.Clans {
         /// </summary>
         [JsonProperty("countryCode")]
         public virtual string CountryCode {
-            get {
-                return this._countryCode;
-            } set {
-                this._countryCode = value;
-            }
+            get => this._countryCode; set => this._countryCode = value;
         } // end property CountryCode
 
         /// <summary>
@@ -49,11 +45,7 @@ namespace ClashClient.Clans {
         /// </summary>
         [JsonProperty("id")]
         public virtual int Id {
-            get {
-                return this._id;
-            } set {
-                this._id = value;
-            }
+            get => this._id; set => this._id = value;
         } // end property Id
 
         /// <summary>
@@ -61,11 +53,7 @@ namespace ClashClient.Clans {
         /// </summary>
         [JsonProperty("isCountry")]
         public virtual bool IsCountry {
-            get {
-                return this._isCountry;
-            } set {
-                this._isCountry = value;
-            }
+            get => this._isCountry; set => this._isCountry = value;
         } // end property IsCountry
 
         /// <summary>
@@ -73,9 +61,7 @@ namespace ClashClient.Clans {
         /// </summary>
         [JsonProperty("name")]
         public virtual string Name {
-            get {
-                return this._name;
-            } set {
+            get => this._name; set {
                 if (value != null) {
                     this._name = value;
                 }

@@ -19,7 +19,7 @@ namespace ClashClient.Tests.Unit.Net {
         public void QueryStringFormatter_Format_GivenNameAndValue_ShouldReturnFormattedString(string expectedValue, object inputValue) {
             // ARRANGE
             var sut = new QueryStringFormatter();
-            string expectedKey = "test";
+            var expectedKey = "test";
             KeyValuePair<string, string> result;
 
             // ACT

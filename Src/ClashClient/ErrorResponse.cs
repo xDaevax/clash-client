@@ -1,9 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace ClashClient {
     /// <summary>
@@ -37,11 +33,7 @@ namespace ClashClient {
         /// </summary>
         [JsonProperty("message")]
         public virtual string Message {
-            get {
-                return this._message;
-            } set {
-                this._message = value;
-            }
+            get => this._message; set => this._message = value;
         } // end property Message
 
         /// <summary>
@@ -49,11 +41,7 @@ namespace ClashClient {
         /// </summary>
         [JsonProperty("reason")]
         public virtual string Reason {
-            get {
-                return this._reason;
-            } set {
-                this._reason = value;
-            }
+            get => this._reason; set => this._reason = value;
         } // end property Reason
 
         #endregion

@@ -73,10 +73,7 @@ namespace ClashClient.Configuration {
                 throw new KeyNotFoundException("The specified key could not be found: " + key);
             }
 
-            object returnValue = null;
-
-            returnValue = this._configuration[key];
-
+            var returnValue = this._configuration[key];
             return returnValue;
         } // end function GetValue
 
@@ -90,10 +87,10 @@ namespace ClashClient.Configuration {
         /// <exception cref="KeyNotFoundException">Thrown if the given <paramref name="key"/> is not found</exception>
         /// <exception cref="InvalidCastException">Thrown if the value cannot be unboxed to the given <typeparamref name="TValue"/> type.</exception>
         public virtual TValue GetValue<TValue>(string key) {
-            object value = this.GetValue(key);
+            var value = this.GetValue(key);
             var returnValue = default(TValue);
             if (value != null) {
-                returnValue = (TValue)Convert.ChangeType(value, typeof(TValue));
+                returnValue = (TValue)Convert.ChangeType(value, typeof(TValue), System.Threading.Thread.CurrentThread.CurrentCulture);
             }
 
             return returnValue;
@@ -107,7 +104,7 @@ namespace ClashClient.Configuration {
         /// <exception cref="ArgumentNullException">Thrown if the given <paramref name="key"/> is empty.</exception>
         public virtual bool HasKey(string key) {
             if (string.IsNullOrWhiteSpace(key)) {
-                throw new ArgumentNullException("key", "No key provided.");
+                throw new ArgumentNullException(nameof(key), "No key provided.");
             }
 
             return this._configuration.Any(x => this._comparer.Equals(x.Key, key));
@@ -120,7 +117,7 @@ namespace ClashClient.Configuration {
         /// <param name="value">The value stored in configuration (if loaded)</param>
         /// <returns>true if the value was loaded into the <paramref name="value"/> parameter; false otherwise</returns>
         public virtual bool TryGetValue(string key, out object value) {
-            bool returnValue = false;
+            bool returnValue;
             if (!string.IsNullOrWhiteSpace(key) && this.HasKey(key)) {
                 value = this._configuration[key];
                 returnValue = true;
@@ -140,22 +137,22 @@ namespace ClashClient.Configuration {
         /// <param name="value">The value stored in configuration (if loaded) as a <typeparamref name="TValue"/> instance.</param>
         /// <returns>true if the value was loaded into the <paramref name="value"/> parameter; false otherwise</returns>
         public virtual bool TryGetValue<TValue>(string key, out TValue value) {
-            bool returnValue = false;
+            bool returnValue;
             if (this.TryGetValue(key, out var boxedValue)) {
-                var genericType = typeof(TValue);
+                Type genericType = typeof(TValue);
                 if (genericType.IsValueType || genericType.IsPrimitive || genericType == typeof(string)) {
-                    value = (TValue)Convert.ChangeType(boxedValue, typeof(TValue));
+                    value = (TValue)Convert.ChangeType(boxedValue, typeof(TValue), System.Threading.Thread.CurrentThread.CurrentCulture);
                     returnValue = true;
                 } else if (boxedValue != null && boxedValue.GetType().IsAssignableFrom(typeof(TValue))) {
                     value = (TValue)boxedValue;
                     returnValue = true;
                 } else {
-                    value = default(TValue);
+                    value = default;
                     returnValue = false;
                 }
             } else {
                 returnValue = false;
-                value = default(TValue);
+                value = default;
             }
 
             return returnValue;

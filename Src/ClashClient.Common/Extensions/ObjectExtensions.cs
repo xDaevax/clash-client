@@ -88,7 +88,7 @@ namespace ClashClient.Common.Extensions {
                 return null;
             }
 
-            var typeToReflect = originalObject.GetType();
+            Type typeToReflect = originalObject.GetType();
 
             if (IsPrimitive(typeToReflect)) {
                 return originalObject;
@@ -104,9 +104,9 @@ namespace ClashClient.Common.Extensions {
 
             var cloneObject = _cloneMethod.Invoke(originalObject, null);
             if (typeToReflect.IsArray) {
-                var arrayType = typeToReflect.GetElementType();
+                Type arrayType = typeToReflect.GetElementType();
                 if (IsPrimitive(arrayType) == false) {
-                    Array clonedArray = (Array)cloneObject;
+                    var clonedArray = (Array)cloneObject;
                     clonedArray.ForEach((Array, indicies) => Array.SetValue(InternalCopy(clonedArray.GetValue(indicies), visited), indicies));
                 }
             }
@@ -129,7 +129,7 @@ namespace ClashClient.Common.Extensions {
                 return true;
             }
 
-            return (type.IsValueType && type.IsPrimitive);
+            return ((type?.IsValueType ?? false) && (type?.IsPrimitive ?? false));
         } // end function IsPrimitive
 
         #endregion

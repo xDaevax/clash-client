@@ -26,7 +26,7 @@ namespace ClashClient.TestHelpers {
         /// <param name="sender">The fixture performing test setup</param>
         /// <param name="e">The event args that give context to setup</param>
         protected virtual void OnPreSetup(object sender, TestEventArgs e) {
-            TestContext.WriteLine(e.Name);
+            TestContext.WriteLine(e?.Name);
         } // end method OnPreSetup
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace ClashClient.TestHelpers {
         /// <param name="sender">The fixture performing test setup</param>
         /// <param name="e">The event args that give context to setup</param>
         protected virtual void OnPostSetup(object sender, TestEventArgs e) {
-            TestContext.WriteLine(e.Name);
+            TestContext.WriteLine(e?.Name);
         } // end method OnPostSetup
 
         #endregion

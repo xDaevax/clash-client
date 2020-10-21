@@ -10,3 +10,5 @@ dist
 /.vs
 /Src/.vs/ClashClient/v15/Server/sqlite3
 /Src/packages
+/Src/.vs/ClashClient/v16/TestStore/0/testlog.manifest
+/Src/.vs/ClashClient/v16/TestStore/0/000.testlog

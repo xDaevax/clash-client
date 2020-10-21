@@ -49,9 +49,9 @@ namespace ClashClient.Clans {
         /// <returns>A dictionary of key / value pairs with the data to include in the query string.</returns>
         public override Dictionary<string, object> QueryParametersToInclude() {
             var filteredParameters = new Dictionary<string, object>();
-            var baseParameters = base.QueryParametersToInclude();
+            Dictionary<string, object> baseParameters = base.QueryParametersToInclude();
             if (baseParameters.Any()) {
-                foreach(var key in baseParameters.Keys) {
+                foreach (var key in baseParameters.Keys) {
                     filteredParameters.Add(key, baseParameters[key]);
                 }
             }
@@ -96,11 +96,7 @@ namespace ClashClient.Clans {
         /// </summary>
         [JsonProperty("name")]
         public virtual string ClanName {
-            get {
-                return this._clanName;
-            } set {
-                this._clanName = value;
-            }
+            get => this._clanName; set => this._clanName = value;
         } // end property ClanName
 
         /// <summary>

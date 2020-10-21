@@ -65,9 +65,7 @@ namespace ClashClient.Common.Caching {
         /// <summary>
         /// Gets the underlying cached data.  Not exposed to force usage of the <see cref="LoadCachedData"/> method and the <see cref="CacheHit()"/> method.
         /// </summary>
-        protected TCachedItem Data {
-            get => this._data;
-        } // end property Data
+        protected TCachedItem Data => this._data; // end property Data
 
         #endregion
     } // end class CacheEntry
